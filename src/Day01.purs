@@ -9,17 +9,9 @@ import Data.Maybe (Maybe(..))
 import Data.String.CodePoints (toCodePointArray)
 import Data.String.Utils (lines, trimEnd)
 import Data.Traversable (traverse)
-import Effect (Effect)
-import Effect.Class.Console (log)
-import Node.Encoding (Encoding(..))
-import Node.FS.Sync (readTextFile)
 
-day01 :: String -> Effect Unit
-day01 inputFile = do
-  input <- readTextFile UTF8 inputFile
-  case (extractCallibrationValues input) of
-    Just calibrationValues -> log <<< show $ sum calibrationValues
-    Nothing -> log "Cannot parse input!"
+day01 :: String -> Maybe Int
+day01 input = sum <$> extractCallibrationValues input
 
 extractCallibrationValues :: String -> Maybe (Array Int)
 extractCallibrationValues = trimEnd >>> lines >>> traverse go
