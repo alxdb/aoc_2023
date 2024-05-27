@@ -15,18 +15,21 @@ to generate this file without the comments in this block.
   [ "aff"
   , "arrays"
   , "console"
+  , "control"
   , "effect"
+  , "either"
   , "foldable-traversable"
   , "maybe"
   , "node-buffer"
   , "node-fs"
   , "optparse"
+  , "parsing"
   , "prelude"
   , "spec"
   , "spec-discovery"
   , "strings"
   , "stringutils"
-  , "unicode"
+  , "tuples"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
