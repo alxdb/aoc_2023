@@ -2,13 +2,11 @@ module Day02 (day02) where
 
 import Prelude
 
-import Debug (spy)
-
 import Control.Alt ((<|>))
 import Data.Either (hush)
-import Data.Foldable (sum, foldl, find)
+import Data.Foldable (sum, foldl)
 import Data.List (List)
-import Data.Maybe (Maybe, isNothing)
+import Data.Maybe (Maybe)
 import Data.String.Utils (lines, trimEnd)
 import Data.Traversable (traverse)
 import Data.Tuple (Tuple(..))
@@ -25,13 +23,20 @@ day02 :: String -> Maybe Int
 day02 input = sum <$> (trimEnd >>> lines >>> traverse go) input
   where
   go line = do
-    game <- parseGame (spy "line" line)
-    pure $ if (spy "isPossible" $ isGamePossible game) then game.id else 0
+    game <- parseGame line
+    pure $ handPower $ fewestPossibleCubes game
 
-isGamePossible :: Game -> Boolean
-isGamePossible game = isNothing $ find isHandImpossible (spy "hands" game.hands)
+fewestPossibleCubes :: Game -> Hand
+fewestPossibleCubes game = foldl maxCubes { r: 0, g: 0, b: 0 } game.hands
   where
-  isHandImpossible { r, g, b } = (r > 12) || (g > 13) || (b > 14)
+  maxCubes maxHand hand =
+    { r: max hand.r maxHand.r
+    , g: max hand.g maxHand.g
+    , b: max hand.b maxHand.b
+    }
+
+handPower :: Hand -> Int
+handPower hand = hand.r * hand.g * hand.b
 
 parseGame :: String -> Maybe Game
 parseGame line = hush $ runParser line gameParser
@@ -45,9 +50,9 @@ gameParser = do
 handParser :: Parser String Hand
 handParser = do
   cubes <- cubeParser `sepBy` string ", "
-  pure $ foldl f { r: 0, g: 0, b: 0 } cubes
+  pure $ foldl countCubes { r: 0, g: 0, b: 0 } cubes
   where
-  f counts (Tuple cube count) = case cube of
+  countCubes counts (Tuple cube count) = case cube of
     R -> counts { r = count }
     G -> counts { g = count }
     B -> counts { b = count }
