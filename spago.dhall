@@ -19,11 +19,13 @@ to generate this file without the comments in this block.
   , "debug"
   , "effect"
   , "either"
+  , "exceptions"
   , "foldable-traversable"
   , "lists"
   , "maybe"
   , "node-buffer"
   , "node-fs"
+  , "node-process"
   , "optparse"
   , "parsing"
   , "prelude"
@@ -31,6 +33,7 @@ to generate this file without the comments in this block.
   , "spec-discovery"
   , "strings"
   , "stringutils"
+  , "transformers"
   , "tuples"
   ]
 , packages = ./packages.dhall

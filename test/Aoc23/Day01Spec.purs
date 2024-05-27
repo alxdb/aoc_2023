@@ -1,11 +1,11 @@
-module Test.Day01Spec where
+module Test.Aoc23.Day01Spec where
 
 import Prelude
 
-import Day01 (day01)
+import Aoc23.Day01 (day01)
 
-import Data.Maybe (Maybe(..))
 import Data.Foldable (sum)
+import Data.Maybe (Maybe(..))
 import Test.Spec (Spec, it, describe)
 import Test.Spec.Assertions (shouldEqual)
 

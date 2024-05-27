@@ -1,4 +1,4 @@
-module Day02 (day02) where
+module Aoc23.Day02 (day02) where
 
 import Prelude
 

@@ -1,8 +1,8 @@
-module Test.Day02Spec where
+module Test.Aoc23.Day02Spec where
 
 import Prelude
 
-import Day02 (day02)
+import Aoc23.Day02 (day02)
 
 import Test.Spec (Spec, it, describe)
 import Test.Spec.Assertions (shouldEqual)
