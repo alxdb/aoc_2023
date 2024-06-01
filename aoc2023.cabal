@@ -69,7 +69,7 @@ library
   exposed-modules:  Aoc23.Day01
 
   -- Modules included in this library but not exported.
-  other-modules:    Core.Opt
+  -- other-modules:    
 
   -- LANGUAGE extensions used by modules in this package.
   -- other-extensions:
@@ -103,6 +103,7 @@ executable aoc2023
   build-depends:
     , aoc2023
     , base     ^>=4.18.2.1
+    , text
 
   -- Directories containing source files.
   hs-source-dirs:   app
