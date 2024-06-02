@@ -1,0 +1,29 @@
+name: aoc2023
+version: 0.1.0
+
+ghc-options: -Wall
+default-extensions:
+  - NoImplicitPrelude
+  - OverloadedStrings
+language: GHC2021
+
+library:
+  source-dirs: src
+  dependencies:
+    - base
+
+executables:
+  aoc2023:
+    main: Main.hs
+    source-dirs: app
+    dependencies: aoc2023
+
+tests:
+  spec:
+    main: Spec.hs
+    build-tools: hspec-discover:hspec-discover
+    source-dirs: test
+    dependencies:
+      - aoc2023
+      - base
+      - hspec

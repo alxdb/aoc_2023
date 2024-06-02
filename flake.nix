@@ -18,6 +18,7 @@
           buildInputs = with pkgs; [
             ghc
             cabal-install
+            hpack
           ];
         };
       }

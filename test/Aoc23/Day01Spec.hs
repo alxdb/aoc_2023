@@ -1,11 +1,10 @@
 module Aoc23.Day01Spec (spec) where
 
-import Aoc23.Day01 (solution)
-import Data.Text
+import Aoc23.Day01
 import Test.Hspec
 import Prelude
 
-example_1 :: Text
+example_1 :: String
 example_1 =
   "1abc2\n\
   \pqr3stu8vwx\n\
