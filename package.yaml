@@ -11,12 +11,15 @@ library:
   source-dirs: src
   dependencies:
     - base
+    - errors
 
 executables:
   aoc2023:
     main: Main.hs
     source-dirs: app
-    dependencies: aoc2023
+    dependencies:
+      - aoc2023
+      - base
 
 tests:
   spec:

@@ -24,6 +24,7 @@ library
   ghc-options: -Wall
   build-depends:
       base
+    , errors
   default-language: GHC2021
 
 executable aoc2023
@@ -38,6 +39,7 @@ executable aoc2023
   ghc-options: -Wall
   build-depends:
       aoc2023
+    , base
   default-language: GHC2021
 
 test-suite spec

@@ -2,15 +2,14 @@ module Core.Parser (Error (..), Parser (..), ParserResult, many, satisfy, eoi, p
 
 import Control.Applicative
 import Control.Monad
-import Data.Bifoldable
 import Data.Bifunctor
 import Data.Bool
 import Data.Either
+import Data.EitherR
 import Data.Eq
 import Data.Function
 import Data.Semigroup ((<>))
 import Data.Tuple
-import GHC.Base (undefined)
 import Text.Show
 
 data Error t where
@@ -24,10 +23,10 @@ type ParserRun t a = [t] -> ParserRes t a
 
 type ParserResult t a = Either [Error t] a
 
-newtype Parser t a = Parser {run :: ParserRun t a}
+newtype Parser t a = Parser {runParser :: ParserRun t a}
 
 parse :: Parser t a -> [t] -> ParserResult t a
-parse p ts = fst <$> run p ts
+parse p ts = fst <$> runParser p ts
 
 satisfy :: (t -> Bool) -> Parser t t
 satisfy predicate = Parser go
@@ -44,7 +43,7 @@ eoi = Parser go
     go (x : _) = Left [Unexpected x]
 
 instance Functor (Parser t) where
-  fmap f p = Parser (fmap (first f) . run p)
+  fmap f p = Parser (fmap (first f) . runParser p)
 
 instance Applicative (Parser t) where
   pure :: a -> Parser t a
@@ -54,8 +53,8 @@ instance Applicative (Parser t) where
   pf <*> pa = Parser go
     where
       go r0 = do
-        (f, r1) <- run pf r0
-        (a, r2) <- run pa r1
+        (f, r1) <- runParser pf r0
+        (a, r2) <- runParser pa r1
         return (f a, r2)
 
 instance Monad (Parser t) where
@@ -65,8 +64,8 @@ instance Monad (Parser t) where
   p >>= f = Parser go
     where
       go r0 = do
-        (a, r1) <- run p r0
-        run (f a) r1
+        (a, r1) <- runParser p r0
+        runParser (f a) r1
 
 instance Alternative (Parser t) where
   empty :: Parser t a
@@ -75,24 +74,7 @@ instance Alternative (Parser t) where
   (<|>) :: Parser t a -> Parser t a -> Parser t a
   pl <|> pr = Parser go
     where
-      go r0 = case run pl r0 of
-        Right x -> Right x
-        Left el -> case run pr r0 of
-          Right x -> Right x
-          Left er -> Left $ el <> er
-
--- go :: ParserRun t a
--- go r = bifoldrM _ _ r (run pl r)
-
--- go r = either (\el -> either (\er -> Left $ el <> er) pure (run pr r)) pure (run pl r)
-
--- many :: Parser t b -> Parser t [b]
--- many p = Parser go
---   where
---     go [] = Left [Empty]
---     go (x : _) = _
-
--- anyTill :: Parser t b -> Parser t a -> Parser t a
--- anyTill a b = Parser go
---   where
---     go r0 =
+      go r = runEitherR $ do
+        el <- EitherR (runParser pl r)
+        er <- EitherR (runParser pr r)
+        return $ el <> er
