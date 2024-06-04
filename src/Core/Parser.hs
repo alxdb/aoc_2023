@@ -1,4 +1,4 @@
-module Core.Parser (Error (..), Parser (..), ParserResult, many, satisfy, eoi, parse) where
+module Core.Parser (Error (..), Parser (..), ParserResult, many, satisfy, end, parse) where
 
 import Control.Applicative
 import Control.Monad
@@ -36,8 +36,8 @@ satisfy predicate = Parser go
       | predicate x = Right (x, xs)
       | otherwise = Left [Unexpected x]
 
-eoi :: Parser t ()
-eoi = Parser go
+end :: Parser t ()
+end = Parser go
   where
     go [] = Right ((), [])
     go (x : _) = Left [Unexpected x]

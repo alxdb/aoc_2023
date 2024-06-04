@@ -17,11 +17,11 @@ spec =
       it "returns Unexpected when predicate does not match" $
         let p = satisfy (== 'h')
          in runParser p "goodbye" `shouldBe` Left [Unexpected 'g']
-    describe "eoi" $ do
+    describe "end" $ do
       it "returns unit when input is empty" $
-        runParser eoi "" `shouldBe` Right ((), [])
+        runParser end "" `shouldBe` Right ((), [])
       it "returns error when input is not empty" $
-        runParser eoi "hello" `shouldBe` Left [Unexpected 'h']
+        runParser end "hello" `shouldBe` Left [Unexpected 'h']
     describe "functor" $ do
       it "applies a function to the parsed value" $
         let p = (== 'h') <$> satisfy (== 'h')
