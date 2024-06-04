@@ -2,7 +2,6 @@ module Core.Parser (Error (..), Parser (..), ParserResult, many, satisfy, end, p
 
 import Control.Applicative
 import Control.Monad
-import Data.Bifunctor
 import Data.Bool
 import Data.Either
 import Data.EitherR
@@ -23,7 +22,7 @@ type ParserRun t a = [t] -> ParserRes t a
 
 type ParserResult t a = Either [Error t] a
 
-newtype Parser t a = Parser {runParser :: ParserRun t a}
+newtype Parser t a = Parser {runParser :: ParserRun t a} deriving (Functor)
 
 parse :: Parser t a -> [t] -> ParserResult t a
 parse p ts = fst <$> runParser p ts
@@ -41,9 +40,6 @@ end = Parser go
   where
     go [] = Right ((), [])
     go (x : _) = Left [Unexpected x]
-
-instance Functor (Parser t) where
-  fmap f p = Parser (fmap (first f) . runParser p)
 
 instance Applicative (Parser t) where
   pure :: a -> Parser t a

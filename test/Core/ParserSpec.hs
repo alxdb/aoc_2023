@@ -3,6 +3,7 @@ module Core.ParserSpec (spec) where
 import Core.Parser
 import Test.Hspec
 import Prelude
+import Control.Applicative
 
 spec :: Spec
 spec =
@@ -22,29 +23,36 @@ spec =
         runParser end "" `shouldBe` Right ((), [])
       it "returns error when input is not empty" $
         runParser end "hello" `shouldBe` Left [Unexpected 'h']
-    describe "functor" $ do
-      it "applies a function to the parsed value" $
-        let p = (== 'h') <$> satisfy (== 'h')
-         in runParser p "hello" `shouldBe` Right (True, "ello")
     describe "applicative" $ do
-      it "sequences parsers and applies a function to results" $
+      it "combines parsers sequentially" $
+        let p =
+              (\h e l -> [h, e, l])
+                <$> satisfy (== 'h')
+                <*> satisfy (== 'e')
+                <*> satisfy (== 'l')
+         in runParser p "hello" `shouldBe` Right ("hel", "lo")
+      it "combines errors sequentially" $
         let p =
               (\h e l -> h == 'h' && e == 'e' && l == 'l')
                 <$> satisfy (== 'h')
                 <*> satisfy (== 'e')
                 <*> satisfy (== 'l')
-         in runParser p "hello" `shouldBe` Right (True, "lo")
+         in runParser p "hi" `shouldBe` Left [Unexpected 'i']
     describe "monad" $ do
-      it "sequences results of parsers" $
+      it "sequences parsers" $
         let p = do
               h <- satisfy (== 'h')
               e <- satisfy (== 'e')
-              l1 <- satisfy (== 'l')
-              l2 <- satisfy (== 'l')
-              o <- satisfy (== 'o')
-              return [h, e, l1, l2, o]
-         in runParser p "hello" `shouldBe` Right ("hello", "")
-    describe "many" $ do
-      it "parses multiple instances" $
-        let p = many (satisfy (== 'f'))
-         in runParser p "fffoobar" `shouldBe` Right ("fff", "oobar")
+              l <- satisfy (== 'l')
+              return [l, e, h]
+         in runParser p "hello" `shouldBe` Right ("leh", "lo")
+    describe "alternative" $ do
+      it "combines parsers" $
+        let p = satisfy (== 'l') <|> satisfy (== 'r')
+         in do
+          runParser p "l" `shouldBe` Right ('l', "")
+          runParser p "r" `shouldBe` Right ('r', "")
+      it "combines errors" $
+        let p = satisfy (== 'g') <|> (satisfy (== 'h') >> satisfy (== 'i'))
+         in do
+          runParser p "hello" `shouldBe` Left [Unexpected 'h', Unexpected 'e']
