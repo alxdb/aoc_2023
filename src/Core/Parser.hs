@@ -49,7 +49,6 @@ instance Applicative (Parser t) where
   pure :: a -> Parser t a
   pure x = Parser (\rest -> Right (x, rest))
 
-  (<*>) :: Parser t (a -> b) -> Parser t a -> Parser t b
   pf <*> pa = Parser go
     where
       go r0 = do
@@ -60,7 +59,6 @@ instance Applicative (Parser t) where
 instance Monad (Parser t) where
   return = pure
 
-  (>>=) :: Parser t a -> (a -> Parser t b) -> Parser t b
   p >>= f = Parser go
     where
       go r0 = do
@@ -68,10 +66,8 @@ instance Monad (Parser t) where
         runParser (f a) r1
 
 instance Alternative (Parser t) where
-  empty :: Parser t a
   empty = Parser (\_ -> Left [Empty])
 
-  (<|>) :: Parser t a -> Parser t a -> Parser t a
   pl <|> pr = Parser go
     where
       go r = runEitherR $ do
