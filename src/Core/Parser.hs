@@ -8,11 +8,13 @@ import Data.EitherR
 import Data.Eq
 import Data.Function
 import Data.Semigroup ((<>))
+import Data.String
 import Data.Tuple
 import Text.Show
 
 data Error t where
   Unexpected :: t -> Error t
+  Custom :: String -> Error t
   Empty :: Error t
   deriving (Eq, Show)
 
@@ -59,6 +61,9 @@ instance Monad (Parser t) where
       go r0 = do
         (a, r1) <- runParser p r0
         runParser (f a) r1
+
+instance MonadFail (Parser t) where
+  fail msg = Parser (\_ -> Left [Custom msg])
 
 instance Alternative (Parser t) where
   empty = Parser (\_ -> Left [Empty])

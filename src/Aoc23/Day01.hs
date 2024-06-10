@@ -1,22 +1,24 @@
 module Aoc23.Day01 (solution) where
 
+import Control.Applicative
 import Core.Parser
-import Prelude (Char, Either (..), Int, String, undefined)
+import Data.Char
+import Prelude
 
 solution :: String -> ParserResult Char Int
-solution _ = Right 142
-
--- solution = (sum <$>) . mapM parseDigits . filter (not . null) . lines
+solution = (sum <$>) . mapM parseDigits . filter (not . null) . lines
 
 parseDigits :: String -> ParserResult Char Int
 parseDigits = parse p
   where
-    p = undefined
+    p = do
+      ds <- some parseDigit
+      return $ head ds * 10 + last ds
 
--- p = getDigit . map digitToInt <$> many (PS.between letters letters PS.digit)
---
--- letters = PS.skipMany PS.letter
---
--- getDigit [] = 0
--- getDigit [d1] = (d1 * 10) + d1
--- getDigit (d1 : ds) = (d1 * 10) + last ds
+parseDigit :: Parser Char Int
+parseDigit = p
+  where
+    p = do
+      _ <- many (satisfy isAlpha)
+      d <- satisfy isDigit
+      return $ digitToInt d
