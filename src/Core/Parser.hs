@@ -42,7 +42,6 @@ end = Parser go
     go (x : _) = Left [Unexpected x]
 
 instance Applicative (Parser t) where
-  pure :: a -> Parser t a
   pure x = Parser (\rest -> Right (x, rest))
 
   pf <*> pa = Parser go
