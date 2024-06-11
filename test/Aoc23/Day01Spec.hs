@@ -1,6 +1,7 @@
 module Aoc23.Day01Spec (spec) where
 
 import Aoc23.Day01
+import Aoc23.Solution
 import Test.Hspec
 
 example_1 :: String
@@ -15,4 +16,4 @@ spec =
   describe "Aoc23.Day01" $
     describe "solution" $
       it "solves the sample solution" $
-        solution example_1 `shouldBe` Right 142
+        runSolution solution example_1 `shouldBe` Right 142

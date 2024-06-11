@@ -18,7 +18,10 @@ executables:
     source-dirs: app
     dependencies:
       - aoc2023
+      - errors
       - base
+    data-files:
+      - input/*.txt
 
 tests:
   spec:

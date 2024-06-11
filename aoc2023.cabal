@@ -13,6 +13,7 @@ build-type:     Simple
 library
   exposed-modules:
       Aoc23.Day01
+      Aoc23.Solution
       Core.Parser
   other-modules:
       Paths_aoc2023
@@ -38,6 +39,7 @@ executable aoc2023
   build-depends:
       aoc2023
     , base
+    , errors
   default-language: GHC2021
 
 test-suite spec
