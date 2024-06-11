@@ -3,7 +3,6 @@ module Aoc23.Day01 (solution) where
 import Control.Applicative
 import Core.Parser
 import Data.Char
-import Prelude
 
 solution :: String -> ParserResult Char Int
 solution = (sum <$>) . mapM parseDigits . filter (not . null) . lines

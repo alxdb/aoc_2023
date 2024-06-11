@@ -19,8 +19,7 @@ library
   hs-source-dirs:
       src
   default-extensions:
-      NoImplicitPrelude
-      OverloadedStrings
+      ApplicativeDo
   ghc-options: -Wall
   build-depends:
       base
@@ -34,8 +33,7 @@ executable aoc2023
   hs-source-dirs:
       app
   default-extensions:
-      NoImplicitPrelude
-      OverloadedStrings
+      ApplicativeDo
   ghc-options: -Wall
   build-depends:
       aoc2023
@@ -52,8 +50,7 @@ test-suite spec
   hs-source-dirs:
       test
   default-extensions:
-      NoImplicitPrelude
-      OverloadedStrings
+      ApplicativeDo
   ghc-options: -Wall
   build-tool-depends:
       hspec-discover:hspec-discover

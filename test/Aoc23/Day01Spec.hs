@@ -2,7 +2,6 @@ module Aoc23.Day01Spec (spec) where
 
 import Aoc23.Day01
 import Test.Hspec
-import Prelude
 
 example_1 :: String
 example_1 =

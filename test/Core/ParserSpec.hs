@@ -1,9 +1,8 @@
 module Core.ParserSpec (spec) where
 
+import Control.Applicative
 import Core.Parser
 import Test.Hspec
-import Prelude
-import Control.Applicative
 
 spec :: Spec
 spec =
@@ -50,9 +49,9 @@ spec =
       it "combines parsers" $
         let p = satisfy (== 'l') <|> satisfy (== 'r')
          in do
-          runParser p "l" `shouldBe` Right ('l', "")
-          runParser p "r" `shouldBe` Right ('r', "")
+              runParser p "l" `shouldBe` Right ('l', "")
+              runParser p "r" `shouldBe` Right ('r', "")
       it "combines errors" $
         let p = satisfy (== 'g') <|> (satisfy (== 'h') >> satisfy (== 'i'))
          in do
-          runParser p "hello" `shouldBe` Left [Unexpected 'h', Unexpected 'e']
+              runParser p "hello" `shouldBe` Left [Unexpected 'h', Unexpected 'e']

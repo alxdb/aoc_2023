@@ -3,8 +3,7 @@ version: 0.1.0
 
 ghc-options: -Wall
 default-extensions:
-  - NoImplicitPrelude
-  - OverloadedStrings
+  - ApplicativeDo
 language: GHC2021
 
 library:

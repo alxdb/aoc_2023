@@ -1,16 +1,7 @@
-module Core.Parser (Error (..), Parser (..), ParserResult, many, satisfy, end, parse) where
+module Core.Parser (Error (..), Parser (..), ParserResult, satisfy, end, parse) where
 
 import Control.Applicative
-import Control.Monad
-import Data.Bool
-import Data.Either
 import Data.EitherR
-import Data.Eq
-import Data.Function
-import Data.Semigroup ((<>))
-import Data.String
-import Data.Tuple
-import Text.Show
 
 data Error t where
   Unexpected :: t -> Error t
