@@ -1,7 +1,10 @@
 module Main where
 
-import System.IO (IO, putStrLn)
+import System.Environment
 
 main :: IO ()
 main = do
-  putStrLn "Hello, Haskell!"
+  args <- getArgs
+  case args of
+    [dayN] -> print dayN
+    _ -> fail "Provide day number as first argument"
