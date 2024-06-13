@@ -1,6 +1,7 @@
 module Main where
 
 import Aoc23.Day01 qualified as D1
+import Aoc23.Day02 qualified as D2
 import Aoc23.Solution
 import Control.Error.Util
 import Paths_aoc2023
@@ -25,6 +26,7 @@ parseArgs = do
 getSolution :: Args -> IO Solution
 getSolution (Args dayN) = case dayN of
   1 -> return D1.solution
+  2 -> return D2.solution
   _ -> fail "Solution not complete"
 
 getInput :: Args -> IO String

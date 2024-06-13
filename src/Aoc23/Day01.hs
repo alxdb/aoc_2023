@@ -11,14 +11,17 @@ solution :: Solution
 solution = Solution $ (sum <$>) . mapM calibrationValue . filter (not . null) . lines
 
 calibrationValue :: String -> Either String Int
-calibrationValue = fmapL errorMessage . parse p
-  where
-    p = do
-      ds <- some . next $ digit
-      return $ head ds * 10 + last ds
+calibrationValue =
+  fmapL errorMessage
+    . parse
+      ( do
+          ds <- some . next $ digit
+          return $ head ds * 10 + last ds
+      )
 
-    errorMessage [Empty] = "Couldn't find a digit in input line"
-    errorMessage _ = undefined
+errorMessage :: [Error t] -> String
+errorMessage [Empty] = "Couldn't find a digit in input line"
+errorMessage _ = undefined
 
 digit :: Parser Char Int
 digit =

@@ -13,6 +13,7 @@ build-type:     Simple
 library
   exposed-modules:
       Aoc23.Day01
+      Aoc23.Day02
       Aoc23.Solution
       Core.Parser
   other-modules:
@@ -48,6 +49,7 @@ test-suite spec
   main-is: Spec.hs
   other-modules:
       Aoc23.Day01Spec
+      Aoc23.Day02Spec
       Core.ParserSpec
       Paths_aoc2023
   hs-source-dirs:
