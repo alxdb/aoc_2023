@@ -8,6 +8,7 @@ import Data.Functor (($>))
 import Aoc23.Solution
 import Core.Parser
 import Core.Parser.Char
+import Core.Parser.Combinator
 
 import Data.EitherR (fmapL)
 
