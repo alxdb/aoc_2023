@@ -1,8 +1,9 @@
-module Core.Parser.Combinator (anything, exactly, exact, next) where
+module Core.Parser.Combinator (anything, exactly, exact, next, mapping) where
 
 import Prelude
 
-import Control.Applicative (Alternative (..))
+import Control.Applicative (Alternative (..), asum)
+import Data.Functor (($>))
 
 import Core.Parser
 
@@ -21,3 +22,6 @@ next p = go
   go = do
     v <- (Just <$> p) <|> (Nothing <$ anything)
     maybe go return v
+
+mapping :: (Ord t) => [(Parser t a, b)] -> Parser t b
+mapping = asum . map (uncurry ($>))

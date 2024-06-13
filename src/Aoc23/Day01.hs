@@ -3,7 +3,6 @@ module Aoc23.Day01 (solution) where
 import Prelude
 
 import Control.Applicative
-import Data.Functor (($>))
 
 import Aoc23.Solution
 import Core.Parser
@@ -23,19 +22,12 @@ extractCalibrationValue = fmapL errorMessage . parse calibrationValueParser
 
 calibrationValueParser :: Parser Char Int
 calibrationValueParser = do
-  ds <- some . next $ (digitParser <|> multiSpelledDigitParser)
-  return $ head ds * 10 + last ds
-
-multiSpelledDigitParser :: Parser Char Int
-multiSpelledDigitParser = do
-  -- Parses portmenteaus of digits
-  s <- lookAhead spelledDigitParser
-  _ <- anything
-  return s
+  digits <- some . next $ (digitParser <|> (const <$> lookAhead spelledDigitParser <*> anything))
+  return $ head digits * 10 + last digits
 
 spelledDigitParser :: Parser Char Int
 spelledDigitParser =
-  asum . map (\(s, x) -> exact s $> x) $
+  exactMapping
     [ ("one", 1)
     , ("two", 2)
     , ("three", 3)
