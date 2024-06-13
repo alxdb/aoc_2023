@@ -3,11 +3,11 @@ module Aoc23.Day01 (solution) where
 import Prelude
 
 import Control.Applicative
-import Data.Char
 import Data.Functor (($>))
 
 import Aoc23.Solution
 import Core.Parser
+import Core.Parser.Char
 
 import Data.EitherR (fmapL)
 
@@ -22,18 +22,15 @@ extractCalibrationValue = fmapL errorMessage . parse calibrationValueParser
 
 calibrationValueParser :: Parser Char Int
 calibrationValueParser = do
-  ds <- some . next $ digitParser
+  ds <- some . next $ (digitParser <|> multiSpelledDigitParser)
   return $ head ds * 10 + last ds
 
-digitParser :: Parser Char Int
-digitParser =
-  digitToInt
-    <$> satisfy isDigit
-    <|> do
-      -- Parses portmenteaus of digits
-      s <- lookAhead spelledDigitParser
-      _ <- anything
-      return s
+multiSpelledDigitParser :: Parser Char Int
+multiSpelledDigitParser = do
+  -- Parses portmenteaus of digits
+  s <- lookAhead spelledDigitParser
+  _ <- anything
+  return s
 
 spelledDigitParser :: Parser Char Int
 spelledDigitParser =
