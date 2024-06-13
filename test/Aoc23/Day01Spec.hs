@@ -11,9 +11,27 @@ example_1 =
   \a1b2c3d4e5f\n\
   \treb7uchet\n"
 
+example_2 :: String
+example_2 =
+  "two1nine\n\
+  \eightwothree\n\
+  \abcone2threexyz\n\
+  \xtwone3four\n\
+  \4nineeightseven2\n\
+  \zoneight234\n\
+  \7pqrstsixteen\n"
+
 spec :: Spec
 spec =
-  describe "Aoc23.Day01" $
-    describe "solution" $
-      it "solves the sample solution" $
+  describe "Aoc23.Day01" $ do
+    describe "solution" $ do
+      it "solves the first sample solution" $
         runSolution solution example_1 `shouldBe` Right 142
+      it "solves the second sample solution" $
+        runSolution solution example_2 `shouldBe` Right 281
+    describe "shared letters" $
+      it "sucessfully parses digits that share letters" $
+        runSolution solution "oneight" `shouldBe` Right 18
+    describe "failure" $
+      it "should return the expected message" $
+        runSolution solution "foobar" `shouldBe` Left "Couldn't find a digit in input line"

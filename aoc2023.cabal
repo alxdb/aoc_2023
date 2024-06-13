@@ -24,6 +24,7 @@ library
   ghc-options: -Wall
   build-depends:
       base
+    , containers
     , errors
   default-language: GHC2021
 

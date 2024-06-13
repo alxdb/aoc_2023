@@ -1,13 +1,14 @@
-module Core.Parser (Error (..), Parser (..), ParserResult, satisfy, end, parse) where
+module Core.Parser (Error (..), Parser (..), ParserResult, satisfy, end, parse, exact, next, anything, lookAhead) where
 
 import Control.Applicative
+import Data.Containers.ListUtils
 import Data.EitherR
 
 data Error t where
   Unexpected :: t -> Error t
   Custom :: String -> Error t
   Empty :: Error t
-  deriving (Eq, Show)
+  deriving (Eq, Show, Ord)
 
 type ParserRes t a = Either [Error t] (a, [t])
 
@@ -27,6 +28,22 @@ satisfy predicate = Parser go
     go (x : xs)
       | predicate x = Right (x, xs)
       | otherwise = Left [Unexpected x]
+
+anything :: Parser t t
+anything = satisfy (const True)
+
+exactly :: (Eq t) => t -> Parser t t
+exactly x = satisfy (== x)
+
+exact :: (Eq t) => [t] -> Parser t [t]
+exact = mapM exactly
+
+lookAhead :: Parser t a -> Parser t a
+lookAhead p = Parser go
+  where
+    go r = do
+      (a, _) <- runParser p r
+      return (a, r)
 
 end :: Parser t ()
 end = Parser go
@@ -56,7 +73,7 @@ instance Monad (Parser t) where
 instance MonadFail (Parser t) where
   fail msg = Parser (\_ -> Left [Custom msg])
 
-instance Alternative (Parser t) where
+instance (Ord t) => Alternative (Parser t) where
   empty = Parser (\_ -> Left [Empty])
 
   pl <|> pr = Parser go
@@ -64,4 +81,11 @@ instance Alternative (Parser t) where
       go r = runEitherR $ do
         el <- EitherR (runParser pl r)
         er <- EitherR (runParser pr r)
-        return $ el <> er
+        return . nubOrd $ el <> er
+
+next :: (Ord t) => Parser t a -> Parser t a
+next p = go
+  where
+    go = do
+      v <- (Just <$> p) <|> (Nothing <$ anything)
+      maybe go return v

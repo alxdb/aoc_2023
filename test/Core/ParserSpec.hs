@@ -22,6 +22,11 @@ spec =
         runParser end "" `shouldBe` Right ((), [])
       it "returns error when input is not empty" $
         runParser end "hello" `shouldBe` Left [Unexpected 'h']
+    describe "anything" $ do
+      it "returns anything when there is input" $
+        runParser anything "hello" `shouldBe` Right ('h', "ello")
+      it "returns error when input is empty" $
+        runParser anything "" `shouldBe` Left [Empty]
     describe "applicative" $ do
       it "combines parsers sequentially" $
         let p =
@@ -53,5 +58,19 @@ spec =
               runParser p "r" `shouldBe` Right ('r', "")
       it "combines errors" $
         let p = satisfy (== 'g') <|> (satisfy (== 'h') >> satisfy (== 'i'))
-         in do
-              runParser p "hello" `shouldBe` Left [Unexpected 'h', Unexpected 'e']
+         in runParser p "hello" `shouldBe` Left [Unexpected 'h', Unexpected 'e']
+    describe "exact" $ do
+      it "parses an exact sequence" $
+        let p = exact "hello"
+         in runParser p "hello world" `shouldBe` Right ("hello", " world")
+    describe "next" $ do
+      it "returns the next successful parse" $
+        let p = next $ exact "world"
+         in runParser p "hello world again" `shouldBe` Right ("world", " again")
+      it "returns empty if no successful parse" $
+        let p = next $ exact "hi"
+         in runParser p "hello" `shouldBe` Left [Empty]
+    describe "lookAhead" $ do
+      it "parses without consuming input" $
+        let p = lookAhead (exact "hello")
+         in runParser p "hello" `shouldBe` Right ("hello", "hello")
