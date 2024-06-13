@@ -21,6 +21,7 @@ library
   hs-source-dirs:
       src
   default-extensions:
+      NoImplicitPrelude
       ApplicativeDo
   ghc-options: -Wall
   build-depends:
@@ -36,6 +37,7 @@ executable aoc2023
   hs-source-dirs:
       app
   default-extensions:
+      NoImplicitPrelude
       ApplicativeDo
   ghc-options: -Wall
   build-depends:
@@ -55,6 +57,7 @@ test-suite spec
   hs-source-dirs:
       test
   default-extensions:
+      NoImplicitPrelude
       ApplicativeDo
   ghc-options: -Wall
   build-tool-depends:

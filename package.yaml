@@ -3,7 +3,7 @@ version: 0.1.0
 
 ghc-options: -Wall
 default-extensions:
-  - ApplicativeDo
+  - NoImplicitPrelude
 language: GHC2021
 
 library:

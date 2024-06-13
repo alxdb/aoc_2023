@@ -1,7 +1,11 @@
 module Core.ParserSpec (spec) where
 
+import Prelude
+
 import Control.Applicative
+
 import Core.Parser
+
 import Test.Hspec
 
 spec :: Spec

@@ -1,11 +1,15 @@
 module Aoc23.Day01 (solution) where
 
-import Aoc23.Solution
+import Prelude
+
 import Control.Applicative
-import Core.Parser
 import Data.Char
-import Data.EitherR
-import Data.Functor
+import Data.Functor (($>))
+
+import Aoc23.Solution
+import Core.Parser
+
+import Data.EitherR (fmapL)
 
 solution :: Solution
 solution = Solution $ (sum <$>) . mapM calibrationValue . filter (not . null) . lines
@@ -25,22 +29,24 @@ errorMessage _ = undefined
 
 digit :: Parser Char Int
 digit =
-  digitToInt <$> satisfy isDigit <|> do
-    -- Parses portmenteaus of digits
-    s <- lookAhead spelledDigit
-    _ <- anything
-    return s
+  digitToInt
+    <$> satisfy isDigit
+    <|> do
+      -- Parses portmenteaus of digits
+      s <- lookAhead spelledDigit
+      _ <- anything
+      return s
 
 spelledDigit :: Parser Char Int
 spelledDigit =
   asum . map (\(s, x) -> exact s $> x) $
-    [ ("one", 1),
-      ("two", 2),
-      ("three", 3),
-      ("four", 4),
-      ("five", 5),
-      ("six", 6),
-      ("seven", 7),
-      ("eight", 8),
-      ("nine", 9)
+    [ ("one", 1)
+    , ("two", 2)
+    , ("three", 3)
+    , ("four", 4)
+    , ("five", 5)
+    , ("six", 6)
+    , ("seven", 7)
+    , ("eight", 8)
+    , ("nine", 9)
     ]

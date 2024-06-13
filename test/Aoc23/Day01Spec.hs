@@ -1,7 +1,10 @@
 module Aoc23.Day01Spec (spec) where
 
+import Prelude
+
 import Aoc23.Day01
 import Aoc23.Solution
+
 import Test.Hspec
 
 example_1 :: String

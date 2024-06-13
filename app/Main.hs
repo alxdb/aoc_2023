@@ -1,13 +1,16 @@
 module Main where
 
+import Prelude
+
+import Control.Error (note)
+import System.Environment (getArgs)
+import Text.Printf (printf)
+import Text.Read (readMaybe)
+
 import Aoc23.Day01 qualified as D1
 import Aoc23.Day02 qualified as D2
 import Aoc23.Solution
-import Control.Error.Util
 import Paths_aoc2023
-import System.Environment
-import Text.Printf
-import Text.Read
 
 newtype Args = Args {dayN :: Int}
 
