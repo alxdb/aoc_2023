@@ -12,20 +12,18 @@ import Core.Parser
 import Data.EitherR (fmapL)
 
 solution :: Solution
-solution = Solution $ (sum <$>) . mapM calibrationValue . filter (not . null) . lines
+solution = sumLines extractCalibrationValue
 
-calibrationValue :: String -> Either String Int
-calibrationValue =
-  fmapL errorMessage
-    . parse
-      ( do
-          ds <- some . next $ digit
-          return $ head ds * 10 + last ds
-      )
+extractCalibrationValue :: String -> Either String Int
+extractCalibrationValue = fmapL errorMessage . parse calibrationValue
+ where
+  errorMessage [Empty] = "Couldn't find a digit in input line"
+  errorMessage _ = undefined
 
-errorMessage :: [Error t] -> String
-errorMessage [Empty] = "Couldn't find a digit in input line"
-errorMessage _ = undefined
+calibrationValue :: Parser Char Int
+calibrationValue = do
+  ds <- some . next $ digit
+  return $ head ds * 10 + last ds
 
 digit :: Parser Char Int
 digit =
