@@ -1,4 +1,4 @@
-module Core.Parser.Combinator (anything, exactly, exact, next, mapping) where
+module Core.Parser.Combinator (anything, exactly, exact, next, mapping, sepBySome, sepByMany) where
 
 import Prelude
 
@@ -25,3 +25,9 @@ next p = go
 
 mapping :: (Ord t) => [(Parser t a, b)] -> Parser t b
 mapping = asum . map (uncurry ($>))
+
+sepBySome :: (Ord t) => Parser t a -> Parser t b -> Parser t [a]
+sepBySome p s = (:) <$> p <*> many (s >> p)
+
+sepByMany :: (Ord t) => Parser t a -> Parser t b -> Parser t [a]
+sepByMany p s = sepBySome p s <|> pure []

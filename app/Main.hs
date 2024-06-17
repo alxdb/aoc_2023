@@ -29,7 +29,7 @@ parseArgs = do
 getSolution :: Args -> IO Solution
 getSolution (Args dayN) = case dayN of
   1 -> return D1.solution
-  2 -> return D2.solution
+  2 -> return D2.solution_1
   _ -> fail "Solution not complete"
 
 getInput :: Args -> IO String

@@ -19,5 +19,5 @@ spec :: Spec
 spec = describe "Aoc23.Day02" $ do
   describe "solution" $ do
     it "solves the first sample solution" $
-      runSolution solution example_1
+      runSolution solution_1 example_1
         `shouldBe` Right 2810
