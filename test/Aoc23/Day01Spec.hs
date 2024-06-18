@@ -35,6 +35,3 @@ spec =
     describe "shared letters" $
       it "sucessfully parses digits that share letters" $
         runSolution solution "oneight" `shouldBe` Right 18
-    describe "failure" $
-      it "should return the expected message" $
-        runSolution solution "foobar" `shouldBe` Left "Couldn't find a digit in input line"

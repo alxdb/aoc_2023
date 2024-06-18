@@ -8,17 +8,13 @@ import Aoc23.Solution
 import Core.Parser
 import Core.Parser.Char
 import Core.Parser.Combinator
-
-import Data.EitherR (fmapL)
+import Data.Bifunctor (Bifunctor (first))
 
 solution :: Solution
 solution = sumLines extractCalibrationValue
 
 extractCalibrationValue :: String -> Either String Int
-extractCalibrationValue = fmapL errorMessage . parse calibrationValueParser
- where
-  errorMessage [Empty] = "Couldn't find a digit in input line"
-  errorMessage _ = undefined
+extractCalibrationValue = first show . parse calibrationValueParser
 
 calibrationValueParser :: Parser Char Int
 calibrationValueParser = do
