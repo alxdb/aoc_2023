@@ -4,6 +4,7 @@ version: 0.1.0
 ghc-options: -Wall
 default-extensions:
   - NoImplicitPrelude
+  - OverloadedRecordDot
 language: GHC2021
 
 library:

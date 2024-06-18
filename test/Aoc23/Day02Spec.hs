@@ -20,4 +20,4 @@ spec = describe "Aoc23.Day02" $ do
   describe "solution" $ do
     it "solves the first sample solution" $
       runSolution solution_1 example_1
-        `shouldBe` Right 2810
+        `shouldBe` Right 8

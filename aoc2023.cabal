@@ -24,6 +24,7 @@ library
       src
   default-extensions:
       NoImplicitPrelude
+      OverloadedRecordDot
   ghc-options: -Wall
   build-depends:
       base
@@ -39,6 +40,7 @@ executable aoc2023
       app
   default-extensions:
       NoImplicitPrelude
+      OverloadedRecordDot
   ghc-options: -Wall
   build-depends:
       aoc2023
@@ -60,6 +62,7 @@ test-suite spec
       test
   default-extensions:
       NoImplicitPrelude
+      OverloadedRecordDot
   ghc-options: -Wall
   build-tool-depends:
       hspec-discover:hspec-discover
