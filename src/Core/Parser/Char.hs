@@ -1,4 +1,4 @@
-module Core.Parser.Char (digitParser, intParser, exactMapping, ParserC) where
+module Core.Parser.Char (digitParser, intParser, exactMapping, lineParser, ParserC) where
 
 import Prelude
 
@@ -19,3 +19,6 @@ intParser = read <$> some (satisfy isDigit)
 
 exactMapping :: [(String, a)] -> ParserC a
 exactMapping = mapping . fmap (first exact)
+
+lineParser :: ParserC a -> ParserC [a]
+lineParser p = endByMany p (exactly '\n' >> lookAhead anything) (optional (exactly '\n'))

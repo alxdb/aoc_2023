@@ -1,4 +1,15 @@
-module Core.Parser.Combinator (anything, exactly, exact, next, mapping, sepBySome, sepByMany) where
+module Core.Parser.Combinator (
+  anything,
+  exactly,
+  exact,
+  next,
+  mapping,
+  sepBySome,
+  sepByMany,
+  endBySome,
+  endByMany,
+  optional,
+) where
 
 import Prelude
 
@@ -31,3 +42,12 @@ sepBySome p s = (:) <$> p <*> many (s >> p)
 
 sepByMany :: (Ord t) => Parser t a -> Parser t b -> Parser t [a]
 sepByMany p s = sepBySome p s <|> pure []
+
+endBySome :: (Ord t) => Parser t a -> Parser t b -> Parser t c -> Parser t [a]
+endBySome p s e = sepBySome p s <* e
+
+endByMany :: (Ord t) => Parser t a -> Parser t b -> Parser t c -> Parser t [a]
+endByMany p s e = sepByMany p s <* e
+
+optional :: (Ord t) => Parser t a -> Parser t (Maybe a)
+optional p = (Just <$> p) <|> pure Nothing

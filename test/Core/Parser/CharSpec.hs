@@ -1,5 +1,6 @@
 module Core.Parser.CharSpec (spec) where
 
+import Control.Applicative (many)
 import Prelude
 
 import Core.Parser
@@ -16,3 +17,10 @@ spec =
     describe "intParser" $ do
       it "parses an int" $
         runParser intParser "12" `shouldBe` Right (12, "")
+    describe "lineParser" $ do
+      it "parses lines" $
+        runParser (lineParser (many (satisfy (/= '\n')))) "foo\nbar" `shouldBe` Right (["foo", "bar"], "")
+      it "parses lines with trailing newline" $
+        runParser (lineParser (many (satisfy (/= '\n')))) "foo\nbar\n" `shouldBe` Right (["foo", "bar"], "")
+      it "parses empty lines" $
+        runParser (lineParser (many (satisfy (/= '\n')))) "foo\n\nbar" `shouldBe` Right (["foo", "", "bar"], "")
