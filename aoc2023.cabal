@@ -14,6 +14,7 @@ library
   exposed-modules:
       Aoc23.Day01
       Aoc23.Day02
+      Aoc23.Day03
       Aoc23.Solution
       Core.Parser
       Core.Parser.Char
@@ -54,6 +55,7 @@ test-suite spec
   other-modules:
       Aoc23.Day01Spec
       Aoc23.Day02Spec
+      Aoc23.Day03Spec
       Core.Parser.CharSpec
       Core.Parser.CombinatorSpec
       Core.ParserSpec

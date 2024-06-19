@@ -39,7 +39,7 @@ minimumPossibleCubes Game{hands} = foldl go (Hand 0 0 0) hands
 handPower :: Hand -> Int
 handPower (Hand r g b) = r * g * b
 
-gameParser :: Parser Char Game
+gameParser :: ParserC Game
 gameParser = do
   _ <- exact "Game "
   id <- intParser
@@ -47,12 +47,12 @@ gameParser = do
   hands <- sepBySome handParser (exact "; ")
   return $ Game{id, hands}
 
-handParser :: Parser Char Hand
+handParser :: ParserC Hand
 handParser = do
   cubes <- sepBySome cubeParser (exact ", ")
   return $ asHand cubes
 
-cubeParser :: Parser Char (Int, Cube)
+cubeParser :: ParserC (Int, Cube)
 cubeParser = do
   count <- intParser
   _ <- exactly ' '

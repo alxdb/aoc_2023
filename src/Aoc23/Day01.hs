@@ -16,12 +16,12 @@ solution = sumLines extractCalibrationValue
 extractCalibrationValue :: String -> Either String Int
 extractCalibrationValue = first show . parse calibrationValueParser
 
-calibrationValueParser :: Parser Char Int
+calibrationValueParser :: ParserC Int
 calibrationValueParser = do
   digits <- some . next $ (digitParser <|> (const <$> lookAhead spelledDigitParser <*> anything))
   return $ head digits * 10 + last digits
 
-spelledDigitParser :: Parser Char Int
+spelledDigitParser :: ParserC Int
 spelledDigitParser =
   exactMapping
     [ ("one", 1)

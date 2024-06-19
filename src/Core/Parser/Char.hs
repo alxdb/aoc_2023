@@ -1,4 +1,4 @@
-module Core.Parser.Char (digitParser, intParser, exactMapping) where
+module Core.Parser.Char (digitParser, intParser, exactMapping, ParserC) where
 
 import Prelude
 
@@ -9,11 +9,13 @@ import Data.Char (digitToInt, isDigit)
 import Core.Parser
 import Core.Parser.Combinator
 
-digitParser :: Parser Char Int
+type ParserC = Parser Char
+
+digitParser :: ParserC Int
 digitParser = digitToInt <$> satisfy isDigit
 
-intParser :: Parser Char Int
+intParser :: ParserC Int
 intParser = read <$> some (satisfy isDigit)
 
-exactMapping :: [(String, a)] -> Parser Char a
+exactMapping :: [(String, a)] -> ParserC a
 exactMapping = mapping . fmap (first exact)
