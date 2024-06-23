@@ -1,4 +1,4 @@
-module Aoc23.Day03 (solution, schematicParser, Solution(..), Part(..), getPartNumbers) where
+module Aoc23.Day03 (solution, schematicParser, Schematic(..), Part(..), getPartNumbers) where
 
 import Control.Applicative
 import Control.Monad.ST
