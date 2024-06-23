@@ -26,11 +26,13 @@ library
   default-extensions:
       NoImplicitPrelude
       OverloadedRecordDot
+      OverloadedLists
   ghc-options: -Wall
   build-depends:
       base
     , containers
     , errors
+    , vector
   default-language: GHC2021
 
 executable aoc2023
@@ -42,6 +44,7 @@ executable aoc2023
   default-extensions:
       NoImplicitPrelude
       OverloadedRecordDot
+      OverloadedLists
   ghc-options: -Wall
   build-depends:
       aoc2023
@@ -65,6 +68,7 @@ test-suite spec
   default-extensions:
       NoImplicitPrelude
       OverloadedRecordDot
+      OverloadedLists
   ghc-options: -Wall
   build-tool-depends:
       hspec-discover:hspec-discover

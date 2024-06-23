@@ -5,6 +5,7 @@ ghc-options: -Wall
 default-extensions:
   - NoImplicitPrelude
   - OverloadedRecordDot
+  - OverloadedLists
 language: GHC2021
 
 library:
@@ -13,6 +14,7 @@ library:
     - base
     - errors
     - containers
+    - vector
 
 executables:
   aoc2023:
