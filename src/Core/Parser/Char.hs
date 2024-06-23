@@ -2,7 +2,7 @@ module Core.Parser.Char (digitParser, intParser, exactMapping, lineParser, Parse
 
 import Prelude
 
-import Control.Applicative (some)
+import Control.Applicative (optional, some)
 import Data.Bifunctor (first)
 import Data.Char (digitToInt, isDigit)
 

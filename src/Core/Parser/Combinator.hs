@@ -8,7 +8,6 @@ module Core.Parser.Combinator (
   sepByMany,
   endBySome,
   endByMany,
-  optional,
 ) where
 
 import Prelude
@@ -48,6 +47,3 @@ endBySome p s e = sepBySome p s <* e
 
 endByMany :: (Ord t) => Parser t a -> Parser t b -> Parser t c -> Parser t [a]
 endByMany p s e = sepByMany p s <* e
-
-optional :: (Ord t) => Parser t a -> Parser t (Maybe a)
-optional p = (Just <$> p) <|> pure Nothing
