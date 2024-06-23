@@ -9,6 +9,10 @@ version:        0.1.0
 license:        MIT
 license-file:   LICENSE
 build-type:     Simple
+data-files:
+    input/day01.txt
+    input/day02.txt
+    input/day03.txt
 
 library
   exposed-modules:

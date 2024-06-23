@@ -8,6 +8,9 @@ default-extensions:
   - OverloadedLists
 language: GHC2021
 
+data-files:
+  - input/*.txt
+
 library:
   source-dirs: src
   dependencies:
@@ -24,8 +27,6 @@ executables:
       - aoc2023
       - errors
       - base
-    data-files:
-      - input/*.txt
 
 tests:
   spec:
