@@ -1,4 +1,4 @@
-module Aoc23.Day03 (solution, schematicParser, Schematic(..), Part(..), getPartNumbers) where
+module Aoc23.Day03 (solution_1, schematicParser, Schematic(..), Part(..), getPartNumbers) where
 
 import Control.Applicative
 import Control.Monad.ST
@@ -13,8 +13,8 @@ import Core.Parser
 import Core.Parser.Char
 import Core.Parser.Combinator
 
-solution :: Solution
-solution = Solution $ \input -> do
+solution_1 :: Solution
+solution_1 = Solution $ \input -> do
   schematic <- fmapL show $ parse schematicParser input
   let partNumbers = getPartNumbers schematic
   return . sum $ partNumbers

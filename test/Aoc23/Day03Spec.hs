@@ -45,6 +45,6 @@ spec = describe "Aoc23.Day03" $ do
   describe "getPartNumbers" $ do
     it "extracts part numbers" $
       getPartNumbers expectedSchematic `shouldBe` [598, 664, 755, 592, 617, 633, 35, 467]
-  describe "solution" $ do
+  describe "solution_1" $ do
     it "solves the sample solution" $
-      runSolution solution sampleInput `shouldBe` Right 4361
+      runSolution solution_1 sampleInput `shouldBe` Right 4361
