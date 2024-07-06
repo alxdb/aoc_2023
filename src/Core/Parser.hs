@@ -4,6 +4,7 @@ module Core.Parser (
   ParserResult,
   satisfy,
   end,
+  parseWhile,
   parse,
   lookAhead,
 ) where
@@ -46,6 +47,14 @@ lookAhead p = Parser go
   go r = do
     (a, _) <- runParser p r
     return (a, r)
+
+parseWhile :: (t -> Bool) -> Parser t a -> Parser t a
+parseWhile f p = Parser go
+ where
+  go r = do
+    let (r1, r2) = span f r
+    (a, _) <- runParser p r1
+    return (a, r2)
 
 end :: Parser t ()
 end = Parser go

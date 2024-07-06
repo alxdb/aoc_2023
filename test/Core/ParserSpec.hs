@@ -21,6 +21,10 @@ spec =
       it "returns Unexpected when predicate does not match" $
         let p = satisfy (== 'h')
          in runParser p "goodbye" `shouldBe` Left [Unexpected 'g']
+    describe "lookAhead" $ do
+      it "parses without consuming input" $
+        let p = lookAhead $ satisfy (== 'h')
+         in runParser p "hello" `shouldBe` Right ('h', "hello")
     describe "end" $ do
       it "returns unit when input is empty" $
         runParser end "" `shouldBe` Right ((), [])

@@ -2,7 +2,7 @@ module Core.Parser.Char (digitParser, intParser, exactMapping, lineParser, Parse
 
 import Prelude
 
-import Control.Applicative (optional, some)
+import Control.Applicative (some)
 import Data.Bifunctor (first)
 import Data.Char (digitToInt, isDigit)
 
@@ -21,4 +21,4 @@ exactMapping :: [(String, a)] -> ParserC a
 exactMapping = mapping . fmap (first exact)
 
 lineParser :: ParserC a -> ParserC [a]
-lineParser p = endByMany p (exactly '\n' >> lookAhead anything) (optional (exactly '\n'))
+lineParser p = sepByMany (parseWhile (/= '\n') p) (exactly '\n' >> notEnd)

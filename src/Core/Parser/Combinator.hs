@@ -2,18 +2,20 @@ module Core.Parser.Combinator (
   anything,
   exactly,
   exact,
+  never,
   next,
   mapping,
   sepBySome,
   sepByMany,
   endBySome,
   endByMany,
+  notEnd,
 ) where
 
 import Prelude
 
 import Control.Applicative (Alternative (..), asum)
-import Data.Functor (($>))
+import Data.Functor (void, ($>))
 
 import Core.Parser
 
@@ -26,12 +28,13 @@ exactly x = satisfy (== x)
 exact :: (Eq t) => [t] -> Parser t [t]
 exact = mapM exactly
 
+never :: (Eq t) => t -> Parser t t
+never x = satisfy (/= x)
+
 next :: (Ord t) => Parser t a -> Parser t a
-next p = go
- where
-  go = do
-    v <- (Just <$> p) <|> (Nothing <$ anything)
-    maybe go return v
+next p = do
+  v <- (Just <$> p) <|> (Nothing <$ anything)
+  maybe (next p) return v
 
 mapping :: (Ord t) => [(Parser t a, b)] -> Parser t b
 mapping = asum . map (uncurry ($>))
@@ -47,3 +50,6 @@ endBySome p s e = sepBySome p s <* e
 
 endByMany :: (Ord t) => Parser t a -> Parser t b -> Parser t c -> Parser t [a]
 endByMany p s e = sepByMany p s <* e
+
+notEnd :: Parser t ()
+notEnd = void (lookAhead anything)

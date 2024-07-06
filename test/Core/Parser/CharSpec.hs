@@ -1,10 +1,12 @@
 module Core.Parser.CharSpec (spec) where
 
-import Control.Applicative (many)
 import Prelude
+
+import Control.Applicative (many, some)
 
 import Core.Parser
 import Core.Parser.Char
+import Core.Parser.Combinator
 
 import Test.Hspec
 
@@ -19,8 +21,10 @@ spec =
         runParser intParser "12" `shouldBe` Right (12, "")
     describe "lineParser" $ do
       it "parses lines" $
-        runParser (lineParser (many (satisfy (/= '\n')))) "foo\nbar" `shouldBe` Right (["foo", "bar"], "")
-      it "parses lines with trailing newline" $
-        runParser (lineParser (many (satisfy (/= '\n')))) "foo\nbar\n" `shouldBe` Right (["foo", "bar"], "")
+        runParser (lineParser (many anything)) "foo\nbar" `shouldBe` Right (["foo", "bar"], "")
+      it "parses lines with trailing newline, without adding an empty result" $
+        runParser (lineParser (many anything)) "foo\nbar\n" `shouldBe` Right (["foo", "bar"], "\n")
       it "parses empty lines" $
-        runParser (lineParser (many (satisfy (/= '\n')))) "foo\n\nbar" `shouldBe` Right (["foo", "", "bar"], "")
+        runParser (lineParser (many anything)) "foo\n\nbar" `shouldBe` Right (["foo", "", "bar"], "")
+      it "parses until first failure" $
+        runParser (lineParser (some (exactly 'a'))) "aaa\nbbb\naaa" `shouldBe` Right (["aaa"], "\nbbb\naaa")
