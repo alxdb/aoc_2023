@@ -25,14 +25,14 @@ expectedSchematic :: Schematic
 expectedSchematic =
   Schematic
     [ [Di 467, Di 467, Di 467, Em '.', Em '.', Di 114, Di 114, Di 114, Em '.', Em '.']
-    , [Em '.', Em '.', Em '.', Sy '*', Em '.', Em '.', Em '.', Em '.', Em '.', Em '.']
+    , [Em '.', Em '.', Em '.', Gr '*', Em '.', Em '.', Em '.', Em '.', Em '.', Em '.']
     , [Em '.', Em '.', Di 035, Di 035, Em '.', Em '.', Di 633, Di 633, Di 633, Em '.']
     , [Em '.', Em '.', Em '.', Em '.', Em '.', Em '.', Sy '#', Em '.', Em '.', Em '.']
-    , [Di 617, Di 617, Di 617, Sy '*', Em '.', Em '.', Em '.', Em '.', Em '.', Em '.']
+    , [Di 617, Di 617, Di 617, Gr '*', Em '.', Em '.', Em '.', Em '.', Em '.', Em '.']
     , [Em '.', Em '.', Em '.', Em '.', Em '.', Sy '+', Em '.', Di 058, Di 058, Em '.']
     , [Em '.', Em '.', Di 592, Di 592, Di 592, Em '.', Em '.', Em '.', Em '.', Em '.']
     , [Em '.', Em '.', Em '.', Em '.', Em '.', Em '.', Di 755, Di 755, Di 755, Em '.']
-    , [Em '.', Em '.', Em '.', Sy '$', Em '.', Sy '*', Em '.', Em '.', Em '.', Em '.']
+    , [Em '.', Em '.', Em '.', Sy '$', Em '.', Gr '*', Em '.', Em '.', Em '.', Em '.']
     , [Em '.', Di 664, Di 664, Di 664, Em '.', Di 598, Di 598, Di 598, Em '.', Em '.']
     ]
 
@@ -44,7 +44,7 @@ spec = describe "Aoc23.Day03" $ do
         `shouldBe` Right expectedSchematic
   describe "getPartNumbers" $ do
     it "extracts part numbers" $
-      getPartNumbers expectedSchematic `shouldBe` [598, 664, 755, 592, 617, 633, 35, 467]
+      getPartNumbers expectedSchematic `shouldBe` [467, 35, 633, 617, 592, 755, 664, 598]
   describe "solution_1" $ do
     it "solves the sample solution" $
       runSolution solution_1 sampleInput `shouldBe` Right 4361

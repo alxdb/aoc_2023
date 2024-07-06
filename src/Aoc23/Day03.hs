@@ -1,11 +1,13 @@
-module Aoc23.Day03 (solution_1, schematicParser, Schematic(..), Part(..), getPartNumbers) where
+module Aoc23.Day03 (solution_1, schematicParser, Schematic (..), Part (..), getPartNumbers) where
 
-import Control.Applicative
-import Control.Monad.ST
-import Data.STRef
 import Prelude
 
-import Data.Vector (Vector, fromList, ifoldM, ifoldl, (!?))
+import Control.Applicative
+import Data.List
+import Data.Maybe
+
+import Data.Vector (Vector, (!?))
+import Data.Vector qualified as V
 
 import Aoc23.Solution
 import Control.Error (fmapL)
@@ -19,59 +21,73 @@ solution_1 = Solution $ \input -> do
   let partNumbers = getPartNumbers schematic
   return . sum $ partNumbers
 
+type Grid a = Vector (Vector a)
+
 newtype Schematic where
-  Schematic :: Vector (Vector Part) -> Schematic
+  Schematic :: Grid Part -> Schematic
   deriving (Show, Eq)
 
 data Part where
   Di :: Int -> Part
-  Sy :: Char -> Part
   Em :: Char -> Part
+  Gr :: Char -> Part
+  Sy :: Char -> Part
   deriving (Show, Eq)
 
-isSy :: Part -> Bool
-isSy (Sy _) = True
-isSy _ = False
+getDigit :: Part -> Maybe Int
+getDigit (Di i) = Just i
+getDigit _ = Nothing
+
+isSymbol :: Part -> Bool
+isSymbol (Sy _) = True
+isSymbol (Gr _) = True
+isSymbol _ = False
+
+getElem :: Int -> Int -> Schematic -> Maybe Part
+getElem r c (Schematic s) = (s !? r) >>= (!? c)
+
+neighbours :: Int -> Int -> Schematic -> [Part]
+neighbours r c s =
+  catMaybes
+    [ getElem j i s
+    | j <- [(r - 1) .. (r + 1)]
+    , i <- [(c - 1) .. (c + 1)]
+    ]
 
 schematicParser :: ParserC Schematic
-schematicParser = Schematic . fromList . map fromList <$> lineParser schematicLine
+schematicParser =
+  Schematic
+    . V.fromList
+    . map V.fromList
+    <$> lineParser schematicLineParser
  where
-  schematicLine :: ParserC [Part]
-  schematicLine = concatMap replicateDigit <$> many partParser
+  schematicLineParser = concatMap replicateDigit <$> many partParser
+  partParser =
+    (Di <$> intParser)
+      <|> (Em <$> exactly '.')
+      <|> (Gr <$> exactly '*')
+      <|> (Sy <$> anything)
 
-  partParser :: ParserC Part
-  partParser = Em <$> exactly '.' <|> Di <$> intParser <|> Sy <$> satisfy (/= '\n')
-
-  replicateDigit :: Part -> [Part]
   replicateDigit (Di x) = replicate (length . show $ x) (Di x)
   replicateDigit x = [x]
 
 getPartNumbers :: Schematic -> [Int]
-getPartNumbers (Schematic s) = ifoldl perLine [] s
+getPartNumbers s@(Schematic rows) = V.ifoldl go [] rows
  where
-  perLine :: [Int] -> Int -> Vector Part -> [Int]
-  perLine results row line = runST $ do
-    ref <- newSTRef False
-    let go lineResults col part = do
-          let indexSch i j = (s !? j) >>= (!? i)
-          let isPartNo =
-                or
-                  [ maybe False isSy $ indexSch i j
-                  | j <- [(row - 1) .. (row + 1)]
-                  , i <- [(col - 1) .. (col + 1)]
-                  ]
-          case part of
-            (Di x) -> do
-              inDigit <- readSTRef ref
-              if inDigit
-                then return lineResults
-                else
-                  if isPartNo
-                    then do
-                      writeSTRef ref True
-                      return (x : lineResults)
-                    else return lineResults
-            _ -> do
-              writeSTRef ref False
-              return lineResults
-    ifoldM go results line
+  go results r row =
+    let
+      getIndexedDigit (i, p) = do
+        d <- getDigit p
+        return (i, d)
+      isPartNum (c, _) = any isSymbol $ neighbours r c s
+      results' =
+        mapMaybe
+          (fmap snd . find isPartNum)
+          . adjacentIndexes
+          . mapMaybe getIndexedDigit
+          $ (V.toList . V.indexed $ row)
+     in
+      results ++ results'
+
+adjacentIndexes :: [(Int, a)] -> [[(Int, a)]]
+adjacentIndexes xs = undefined
