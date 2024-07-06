@@ -31,7 +31,7 @@ getSolution :: Args -> IO Solution
 getSolution (Args dayN) = case dayN of
   1 -> return D1.solution
   2 -> return D2.solution_2
-  3 -> return D3.solution
+  3 -> return D3.solution_1
   _ -> fail "Solution not complete"
 
 getInput :: Args -> IO String

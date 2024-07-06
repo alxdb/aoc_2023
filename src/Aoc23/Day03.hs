@@ -13,7 +13,7 @@ import Aoc23.Solution
 import Control.Error (fmapL)
 import Core.Parser
 import Core.Parser.Char
-import Core.Parser.Combinator
+import Core.Parser.Combinator hiding (next)
 
 solution_1 :: Solution
 solution_1 = Solution $ \input -> do
@@ -90,4 +90,11 @@ getPartNumbers s@(Schematic rows) = V.ifoldl go [] rows
       results ++ results'
 
 adjacentIndexes :: [(Int, a)] -> [[(Int, a)]]
-adjacentIndexes xs = undefined
+adjacentIndexes [] = []
+adjacentIndexes (x : xs) = snd $ foldl go (x, [[x]]) xs
+ where
+  go ((prevI, _), results@(current : others)) next@(nextI, _) =
+    if nextI - prevI == 1
+      then (next, (next : current) : others)
+      else (next, [next] : results)
+  go ((_, _), []) (_, _) = undefined

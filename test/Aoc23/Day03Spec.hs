@@ -2,6 +2,8 @@ module Aoc23.Day03Spec (spec) where
 
 import Prelude
 
+import Data.List
+
 import Aoc23.Day03
 import Aoc23.Solution
 import Core.Parser
@@ -44,7 +46,7 @@ spec = describe "Aoc23.Day03" $ do
         `shouldBe` Right expectedSchematic
   describe "getPartNumbers" $ do
     it "extracts part numbers" $
-      getPartNumbers expectedSchematic `shouldBe` [467, 35, 633, 617, 592, 755, 664, 598]
+      sort (getPartNumbers expectedSchematic) `shouldBe` [35, 467, 592, 598, 617, 633, 664, 755]
   describe "solution_1" $ do
     it "solves the sample solution" $
       runSolution solution_1 sampleInput `shouldBe` Right 4361
