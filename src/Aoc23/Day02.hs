@@ -1,6 +1,9 @@
 module Aoc23.Day02 (solution_1, solution_2) where
 
+import Flow
 import Prelude hiding (id)
+
+import Control.Error (fmapL)
 
 import Aoc23.Solution
 import Core.Parser
@@ -15,12 +18,18 @@ solution_2 :: Solution
 solution_2 = sumLines lineSolution_2
 
 lineSolution_1 :: String -> Either String Int
-lineSolution_1 = bimap show go . parse gameParser
+lineSolution_1 = parse gameParser .> bimap show go
  where
-  go game = if gameIsPossible (Hand 12 13 14) game then game.id else 0
+  referenceHand = Hand 12 13 14
+  go game =
+    if gameIsPossible referenceHand game
+      then game.id
+      else 0
 
 lineSolution_2 :: String -> Either String Int
-lineSolution_2 = bimap show (handPower . minimumPossibleCubes) . parse gameParser
+lineSolution_2 line = do
+  game <- fmapL show <| parse gameParser line
+  return (minimumPossibleCubes game |> handPower)
 
 data Game = Game {id :: Int, hands :: [Hand]}
 data Hand = Hand {red :: Int, green :: Int, blue :: Int}
@@ -29,21 +38,26 @@ data Cube = Red | Green | Blue
 gameIsPossible :: Hand -> Game -> Bool
 gameIsPossible refHand Game{hands} = all handIsPossible hands
  where
-  handIsPossible Hand{red, green, blue} = red <= refHand.red && green <= refHand.green && blue <= refHand.blue
+  handIsPossible Hand{red, green, blue} =
+    red <= refHand.red
+      && green <= refHand.green
+      && blue <= refHand.blue
 
 minimumPossibleCubes :: Game -> Hand
 minimumPossibleCubes Game{hands} = foldl go (Hand 0 0 0) hands
  where
-  go acc hand = Hand (max acc.red hand.red) (max acc.green hand.green) (max acc.blue hand.blue)
+  go acc hand =
+    Hand
+      (max acc.red hand.red)
+      (max acc.green hand.green)
+      (max acc.blue hand.blue)
 
 handPower :: Hand -> Int
 handPower (Hand r g b) = r * g * b
 
 gameParser :: ParserC Game
 gameParser = do
-  _ <- exact "Game "
-  id <- intParser
-  _ <- exact ": "
+  id <- exact "Game " *> intParser <* exact ": "
   hands <- sepBySome handParser (exact "; ")
   return $ Game{id, hands}
 
@@ -54,8 +68,7 @@ handParser = do
 
 cubeParser :: ParserC (Int, Cube)
 cubeParser = do
-  count <- intParser
-  _ <- exactly ' '
+  count <- intParser <* exactly ' '
   cube <- exactMapping [("red", Red), ("green", Green), ("blue", Blue)]
   return (count, cube)
 

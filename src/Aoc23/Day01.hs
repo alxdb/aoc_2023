@@ -1,5 +1,6 @@
 module Aoc23.Day01 (solution) where
 
+import Flow
 import Prelude
 
 import Control.Applicative
@@ -14,23 +15,24 @@ solution :: Solution
 solution = sumLines extractCalibrationValue
 
 extractCalibrationValue :: String -> Either String Int
-extractCalibrationValue = first show . parse calibrationValueParser
+extractCalibrationValue = parse calibrationValueParser .> first show
 
 calibrationValueParser :: ParserC Int
 calibrationValueParser = do
-  digits <- some . next $ (digitParser <|> (const <$> lookAhead spelledDigitParser <*> anything))
+  digits <- some <| next <| (digitParser <|> spelledDigitSubstrings)
   return $ head digits * 10 + last digits
+ where
+  spelledDigitSubstrings = lookAhead spelledDigitParser <* anything
 
-spelledDigitParser :: ParserC Int
-spelledDigitParser =
-  exactMapping
-    [ ("one", 1)
-    , ("two", 2)
-    , ("three", 3)
-    , ("four", 4)
-    , ("five", 5)
-    , ("six", 6)
-    , ("seven", 7)
-    , ("eight", 8)
-    , ("nine", 9)
-    ]
+  spelledDigitParser =
+    exactMapping
+      [ ("one", 1)
+      , ("two", 2)
+      , ("three", 3)
+      , ("four", 4)
+      , ("five", 5)
+      , ("six", 6)
+      , ("seven", 7)
+      , ("eight", 8)
+      , ("nine", 9)
+      ]
