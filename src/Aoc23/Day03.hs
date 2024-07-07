@@ -49,9 +49,9 @@ getElem r c (Schematic s) = (s !? r) >>= (!? c)
 neighbours :: Int -> Int -> Schematic -> [Part]
 neighbours r c s =
   catMaybes
-    [ getElem j i s
-    | j <- [(r - 1) .. (r + 1)]
-    , i <- [(c - 1) .. (c + 1)]
+    [ getElem r' c' s
+    | r' <- [(r - 1) .. (r + 1)]
+    , c' <- [(c - 1) .. (c + 1)]
     ]
 
 schematicParser :: ParserC Schematic
@@ -80,7 +80,7 @@ getPartNumbers s@(Schematic rows) = V.ifoldl go [] rows
         mapMaybe
           (fmap snd . find isPartNum)
           . contiguousElements
-          . mapMaybe (\(i, p) -> (i,) <$> getDigit p)
+          . mapMaybe (\(c, p) -> (c,) <$> getDigit p)
           $ (V.toList . V.indexed $ row)
      in
       results ++ results'
