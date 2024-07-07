@@ -76,25 +76,22 @@ getPartNumbers s@(Schematic rows) = V.ifoldl go [] rows
  where
   go results r row =
     let
-      getIndexedDigit (i, p) = do
-        d <- getDigit p
-        return (i, d)
-      isPartNum (c, _) = any isSymbol $ neighbours r c s
       results' =
         mapMaybe
           (fmap snd . find isPartNum)
-          . adjacentIndexes
-          . mapMaybe getIndexedDigit
+          . contiguousElements
+          . mapMaybe (\(i, p) -> (i,) <$> getDigit p)
           $ (V.toList . V.indexed $ row)
      in
       results ++ results'
+   where
+    isPartNum (c, _) = any isSymbol $ neighbours r c s
 
-adjacentIndexes :: [(Int, a)] -> [[(Int, a)]]
-adjacentIndexes [] = []
-adjacentIndexes (x : xs) = snd $ foldl go (x, [[x]]) xs
+contiguousElements :: [(Int, a)] -> [[(Int, a)]]
+contiguousElements [] = []
+contiguousElements (x : xs) = foldl' go [[x]] xs
  where
-  go ((prevI, _), results@(current : others)) next@(nextI, _) =
-    if nextI - prevI == 1
-      then (next, (next : current) : others)
-      else (next, [next] : results)
-  go ((_, _), []) (_, _) = undefined
+  go (current : rest) y@(i, _)
+    | i == succ (fst (head current)) = (y : current) : rest
+    | otherwise = [y] : current : rest
+  go _ _ = undefined
