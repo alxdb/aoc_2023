@@ -19,6 +19,7 @@ library:
     - containers
     - vector
     - extra
+    - flow
 
 executables:
   aoc2023:

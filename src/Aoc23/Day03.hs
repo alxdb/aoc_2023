@@ -8,10 +8,10 @@ module Aoc23.Day03 (
   getGearRatios,
 ) where
 
+import Flow
 import Prelude
 
 import Control.Applicative
-import Data.List
 import Data.Maybe
 
 import Data.Tuple.Extra
@@ -28,13 +28,13 @@ solution_1 :: Solution
 solution_1 = Solution $ \input -> do
   schematic <- fmapL show $ parse schematicParser input
   let partNumbers = getPartNumbers schematic
-  return . sum $ partNumbers
+  return $ sum partNumbers
 
 solution_2 :: Solution
 solution_2 = Solution $ \input -> do
   schematic <- fmapL show $ parse schematicParser input
   let gearRatios = getGearRatios schematic
-  return . sum $ gearRatios
+  return $ sum gearRatios
 
 type Grid a = Vector (Vector a)
 
@@ -58,19 +58,15 @@ isSymbol (Sy _) = True
 isSymbol (Gr _) = True
 isSymbol _ = False
 
+isGear :: Part -> Bool
+isGear (Gr _) = True
+isGear _ = False
+
 getElem :: Int -> Int -> Schematic -> Maybe Part
 getElem r c (Schematic s) = (s !? r) >>= (!? c)
 
-neighbours :: Int -> Int -> Schematic -> [Part]
-neighbours r c s =
-  catMaybes
-    [ getElem r' c' s
-    | r' <- [(r - 1) .. (r + 1)]
-    , c' <- [(c - 1) .. (c + 1)]
-    ]
-
-ineighbours :: Int -> Int -> Schematic -> [((Int, Int), Part)]
-ineighbours r c s =
+neighbours :: Schematic -> (Int, Int) -> [((Int, Int), Part)]
+neighbours s (r, c) =
   catMaybes
     [ ((r', c'),) <$> getElem r' c' s
     | r' <- [(r - 1) .. (r + 1)]
@@ -79,67 +75,84 @@ ineighbours r c s =
 
 schematicParser :: ParserC Schematic
 schematicParser =
-  Schematic
-    . V.fromList
-    . map V.fromList
-    <$> lineParser schematicLineParser
+  lineParser schematicLineParser
+    |> fmap V.fromList
+    |> fmap Schematic
  where
-  schematicLineParser = concatMap replicateDigit <$> many partParser
+  schematicLineParser =
+    many partParser
+      |> fmap (concatMap repeatIfDigit)
+      |> fmap V.fromList
   partParser =
     (Em <$> exactly '.')
       <|> (Di <$> intParser)
       <|> (Gr <$> exactly '*')
       <|> (Sy <$> anything)
 
-  replicateDigit (Di x) = replicate (length . show $ x) (Di x)
-  replicateDigit x = [x]
+  repeatIfDigit d@(Di x) =
+    let
+      l = show x |> length
+     in
+      replicate l d
+  repeatIfDigit x = [x]
+
+indexedSchematic :: Schematic -> [((Int, Int), Part)]
+indexedSchematic (Schematic rows) =
+  rows
+    |> indexedList
+    |> concatMap (second indexedList .> flattenIndexes)
+ where
+  indexedList = V.indexed .> V.toList
+  flattenIndexes (r, indexedRow) = map (flattenIndex r) indexedRow
+  flattenIndex r (c, part) = ((r, c), part)
+
+-- group elements if they are successive in a row
+groupBySucc :: [((Int, Int), a)] -> [[((Int, Int), a)]]
+groupBySucc [] = []
+groupBySucc (x : xs) = foldl go [[x]] xs
+ where
+  go (x' : xs') v@((r, c), _)
+    | let
+        -- column of previous element
+        ((_, c'), _) = head x'
+       in
+        -- row is equal
+        -- and column of current element is one more than previous element
+        (r, c) == (r, succ c') =
+        -- append current element to current grouping
+        (v : x') : xs'
+    -- create new group
+    | otherwise = [v] : x' : xs'
+  -- will never happen, accumulator is always populated
+  go [] _ = undefined
 
 getPartNumbers :: Schematic -> [Int]
-getPartNumbers s@(Schematic rows) = V.ifoldl go [] rows
+getPartNumbers s =
+  indexedSchematic s
+    |> mapMaybe (secondM getDigit)
+    |> groupBySucc
+    |> mapMaybe getFirstPartNum
  where
-  go results r row =
-    let
-      results' =
-        mapMaybe
-          (fmap snd . find isPartNum)
-          . contiguousElements
-          . mapMaybe (secondM getDigit)
-          $ (V.toList . V.indexed $ row)
-     in
-      results ++ results'
-   where
-    isPartNum (c, _) = any isSymbol $ neighbours r c s
+  getFirstPartNum = mapMaybe getPartNum .> listToMaybe
+
+  getPartNum (i, d)
+    | any (snd .> isSymbol) $ neighbours s i = Just d
+    | otherwise = Nothing
 
 getGearRatios :: Schematic -> [Int]
-getGearRatios s@(Schematic rows) = V.ifoldl go [] rows
+getGearRatios s =
+  indexedSchematic s
+    |> filter (snd .> isGear)
+    |> map getNeighbouringPartNumbers
+    |> mapMaybe getGearRatio
  where
-  go results r row = V.ifoldl go' results row
-   where
-    go' results' c (Gr _) =
-      let
-        gearRatio =
-          calculateGearRatio
-            . map (snd . head)
-            . contiguousElements
-            . map globalIndex
-            . mapMaybe (secondM getDigit)
-            $ ineighbours r c s
-       in
-        case gearRatio of
-          Just x -> x : results'
-          Nothing -> results'
-    go' results' _ _ = results'
+  getNeighbouringPartNumbers =
+    fst
+      .> neighbours s
+      .> mapMaybe (secondM getDigit)
+      .> groupBySucc
+      .> map (snd . head)
 
-    globalIndex ((r', c'), d) = ((r' * V.length row) + c', d)
-
-  calculateGearRatio [a, b] = Just $ a * b
-  calculateGearRatio _ = Nothing
-
-contiguousElements :: [(Int, a)] -> [[(Int, a)]]
-contiguousElements [] = []
-contiguousElements (x : xs) = foldl' go [[x]] xs
- where
-  go (current : rest) y@(i, _)
-    | i == succ (fst (head current)) = (y : current) : rest
-    | otherwise = [y] : current : rest
-  go _ _ = undefined
+  getGearRatio :: [Int] -> Maybe Int
+  getGearRatio [a, b] = Just $ a * b
+  getGearRatio _ = Nothing

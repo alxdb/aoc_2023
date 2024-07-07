@@ -37,6 +37,7 @@ library
     , containers
     , errors
     , extra
+    , flow
     , vector
   default-language: GHC2021
 
