@@ -63,8 +63,8 @@ schematicParser =
  where
   schematicLineParser = concatMap replicateDigit <$> many partParser
   partParser =
-    (Di <$> intParser)
-      <|> (Em <$> exactly '.')
+    (Em <$> exactly '.')
+      <|> (Di <$> intParser)
       <|> (Gr <$> exactly '*')
       <|> (Sy <$> anything)
 
