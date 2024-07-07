@@ -18,6 +18,7 @@ library:
     - errors
     - containers
     - vector
+    - extra
 
 executables:
   aoc2023:

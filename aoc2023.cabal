@@ -36,6 +36,7 @@ library
       base
     , containers
     , errors
+    , extra
     , vector
   default-language: GHC2021
 

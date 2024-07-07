@@ -50,3 +50,9 @@ spec = describe "Aoc23.Day03" $ do
   describe "solution_1" $ do
     it "solves the sample solution" $
       runSolution solution_1 sampleInput `shouldBe` Right 4361
+  describe "getGearRatios" $ do
+    it "extracts gear ratios" $
+      sort (getGearRatios expectedSchematic) `shouldBe` [16345, 451490]
+  describe "solution_2" $ do
+    it "solves the sample solution" $
+      runSolution solution_2 sampleInput `shouldBe` Right 467835
