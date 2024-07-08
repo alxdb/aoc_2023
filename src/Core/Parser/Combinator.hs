@@ -9,6 +9,7 @@ module Core.Parser.Combinator (
   sepByMany,
   endBySome,
   endByMany,
+  surroundedBy,
   notEnd,
 ) where
 
@@ -50,6 +51,9 @@ endBySome p s e = sepBySome p s <* e
 
 endByMany :: (Ord t) => Parser t a -> Parser t b -> Parser t c -> Parser t [a]
 endByMany p s e = sepByMany p s <* e
+
+surroundedBy :: (Ord t) => Parser t a -> Parser t b -> Parser t b
+surroundedBy s p = s *> p <* s
 
 notEnd :: Parser t ()
 notEnd = void (lookAhead anything)
