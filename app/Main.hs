@@ -10,6 +10,7 @@ import Text.Read (readMaybe)
 import Aoc23.Day01 qualified as D1
 import Aoc23.Day02 qualified as D2
 import Aoc23.Day03 qualified as D3
+import Aoc23.Day04 qualified as D4
 import Aoc23.Solution
 import Paths_aoc2023
 
@@ -32,6 +33,7 @@ getSolution (Args dayN) = case dayN of
   1 -> return D1.solution
   2 -> return D2.solution_2
   3 -> return D3.solution_2
+  4 -> return D4.solution
   _ -> fail "Solution not complete"
 
 getInput :: Args -> IO String

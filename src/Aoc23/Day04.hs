@@ -14,13 +14,15 @@ import Core.Parser.Char
 import Core.Parser.Combinator
 
 solution :: Solution
-solution = sumLines lineSolution
+solution = sumLines (lineSolution elfWins)
 
-lineSolution :: String -> Either String Int
-lineSolution line = do
+lineSolution :: (Card -> Int) -> String -> Either String Int
+lineSolution wins line = do
   card <- fmapL show <| parse cardParser line
-  let points = matches card |> (\x -> if x < 1 then 0 else 2 ^ (x - 1))
-  return points
+  return $ wins card
+
+elfWins :: Card -> Int
+elfWins = matches .> (\x -> if x < 1 then 0 else 2 ^ (x - 1))
 
 data Card = Card
   { id :: Int
@@ -31,7 +33,7 @@ data Card = Card
 
 cardParser :: ParserC Card
 cardParser = do
-  id <- exact "Card " *> intParser <* (exactly ':' >> spaces)
+  id <- exact "Card" >> spaces *> intParser <* (exactly ':' >> spaces)
   wins <- endBySome intParser spaces (exactly '|' |> inSpaces)
   have <- sepBySome intParser spaces
   return $ Card{id, wins, have}
