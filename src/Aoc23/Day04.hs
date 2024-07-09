@@ -1,4 +1,4 @@
-module Aoc23.Day04 (solution) where
+module Aoc23.Day04 (solution_1) where
 
 import Flow
 import Prelude hiding (id)
@@ -6,6 +6,7 @@ import Prelude hiding (id)
 import Data.List
 
 import Control.Error (fmapL)
+import Data.Vector qualified as V
 
 import Aoc23.Solution
 
@@ -13,16 +14,16 @@ import Core.Parser
 import Core.Parser.Char
 import Core.Parser.Combinator
 
-solution :: Solution
-solution = sumLines (lineSolution elfWins)
+solution_1 :: Solution
+solution_1 = sumLines lineSolution
 
-lineSolution :: (Card -> Int) -> String -> Either String Int
-lineSolution wins line = do
-  card <- fmapL show <| parse cardParser line
-  return $ wins card
-
-elfWins :: Card -> Int
-elfWins = matches .> (\x -> if x < 1 then 0 else 2 ^ (x - 1))
+lineSolution :: String -> Either String Int
+lineSolution line = do
+  card <- parse cardParser line |> fmapL show
+  card
+    |> matches
+    |> (\x -> if x < 1 then 0 else 2 ^ (x - 1))
+    |> return
 
 data Card = Card
   { id :: Int
