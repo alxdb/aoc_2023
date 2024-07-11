@@ -3,8 +3,6 @@ module Aoc23.Day02 (solution_1, solution_2) where
 import Flow
 import Prelude hiding (id)
 
-import Control.Error (fmapL)
-
 import Aoc23.Solution
 import Core.Parser
 import Core.Parser.Char
@@ -28,7 +26,7 @@ lineSolution_1 = parse gameParser .> bimap show go
 
 lineSolution_2 :: String -> Either String Int
 lineSolution_2 line = do
-  game <- fmapL show <| parse gameParser line
+  game <- parseShow gameParser line
   return (minimumPossibleCubes game |> handPower)
 
 data Game = Game {id :: Int, hands :: [Hand]}

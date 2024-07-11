@@ -6,12 +6,15 @@ module Core.Parser (
   end,
   parseWhile,
   parse,
+  parseShow,
   lookAhead,
 ) where
 
 import Prelude
 
 import Control.Applicative (Alternative (..))
+
+import Control.Error (fmapL)
 
 import Data.Containers.ListUtils (nubOrd)
 import Data.EitherR (EitherR (..))
@@ -32,6 +35,9 @@ newtype Parser t a = Parser {runParser :: ParserRun t a} deriving (Functor)
 
 parse :: Parser t a -> [t] -> ParserResult t a
 parse p ts = fst <$> runParser p ts
+
+parseShow :: (Show t) => Parser t a -> [t] -> Either String a
+parseShow p ts = fmapL show $ parse p ts
 
 satisfy :: (t -> Bool) -> Parser t t
 satisfy predicate = Parser go

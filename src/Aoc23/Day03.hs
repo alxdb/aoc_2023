@@ -19,20 +19,19 @@ import Data.Vector (Vector, (!?))
 import Data.Vector qualified as V
 
 import Aoc23.Solution
-import Control.Error (fmapL)
 import Core.Parser
 import Core.Parser.Char
 import Core.Parser.Combinator hiding (next)
 
 solution_1 :: Solution
 solution_1 = Solution $ \input -> do
-  schematic <- fmapL show $ parse schematicParser input
+  schematic <- parseShow schematicParser input
   let partNumbers = getPartNumbers schematic
   return $ sum partNumbers
 
 solution_2 :: Solution
 solution_2 = Solution $ \input -> do
-  schematic <- fmapL show $ parse schematicParser input
+  schematic <- parseShow schematicParser input
   let gearRatios = getGearRatios schematic
   return $ sum gearRatios
 
