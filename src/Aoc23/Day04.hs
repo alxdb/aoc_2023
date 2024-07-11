@@ -31,17 +31,21 @@ solution_1 = sumLines go
  where
   go line = do
     card <- parseShow cardParser line
-    card
-      |> matches
-      |> (\x -> if x < 1 then 0 else 2 ^ (x - 1))
-      |> return
+    let points =
+          card
+            |> matches
+            |> (\x -> if x < 1 then 0 else 2 ^ (x - 1))
+    return points
 
 solution_2 :: Solution
 solution_2 = Solution go
  where
   go input = do
     cards <- parseShow (lineParser cardParser) input
-    let cardsById = cards |> map (\card@Card{cardId} -> (cardId, card)) |> IM.fromList
+    let cardsById =
+          cards
+            |> map (\card@Card{cardId} -> (cardId, card))
+            |> IM.fromList
     let allWonCards = concatMap (winningCards cardsById) cards
     return $ length allWonCards + length cards
 
