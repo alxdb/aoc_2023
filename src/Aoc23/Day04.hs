@@ -5,7 +5,8 @@ import Prelude
 
 import Data.List
 
-import Data.IntMap qualified as IM
+import Data.Vector (Vector)
+import Data.Vector qualified as V
 
 import Aoc23.Solution
 import Core.Parser
@@ -41,20 +42,16 @@ solution_2 :: Solution
 solution_2 = Solution go
  where
   go input = do
-    cards <- parseShow (lineParser cardParser) input
-    let cardsById =
-          cards
-            |> map (\card@Card{cardId} -> (cardId, card))
-            |> IM.fromList
-    let allWonCards = concatMap (winningCards cardsById) cards
+    cards <- V.fromList <$> parseShow (lineParser cardParser) input
+    let allWonCards = concatMap (winningCards cards) cards
     return $ length allWonCards + length cards
 
 matches :: Card -> Int
 matches Card{wins, have} = length $ intersect wins have
 
-winningCards :: IM.IntMap Card -> Card -> [Card]
+winningCards :: Vector Card -> Card -> [Card]
 winningCards cards card@Card{cardId} =
   let
-    thisCardWins = [cards IM.! (cardId + i) | i <- [1 .. matches card]]
+    thisCardWins = [cards V.! (cardId + i - 1) | i <- [1 .. matches card]]
    in
     thisCardWins ++ concatMap (winningCards cards) thisCardWins
