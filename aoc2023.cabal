@@ -13,6 +13,7 @@ data-files:
     input/day01.txt
     input/day02.txt
     input/day03.txt
+    input/day04.txt
 
 library
   exposed-modules:
@@ -78,8 +79,7 @@ test-suite spec
       OverloadedRecordDot
       OverloadedLists
   ghc-options: -Wall
-  build-tool-depends:
-      hspec-discover:hspec-discover
+  build-tool-depends: hspec-discover:hspec-discover == 2.*
   build-depends:
       aoc2023
     , base

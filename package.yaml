@@ -32,9 +32,7 @@ executables:
 
 tests:
   spec:
-    main: Spec.hs
-    build-tools: hspec-discover:hspec-discover
-    source-dirs: test
+    defaults: hspec/hspec@main
     dependencies:
       - aoc2023
       - base
