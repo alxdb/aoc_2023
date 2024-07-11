@@ -1,30 +1,19 @@
-module Aoc23.Day04 (solution_1) where
+module Aoc23.Day04 (solution_1, solution_2) where
 
 import Flow
-import Prelude hiding (id)
+import Prelude
 
 import Data.List
 
-import Control.Error (fmapL)
+import Data.IntMap qualified as IM
 
 import Aoc23.Solution
 import Core.Parser
 import Core.Parser.Char
 import Core.Parser.Combinator
 
-solution_1 :: Solution
-solution_1 = sumLines lineSolution
-
-lineSolution :: String -> Either String Int
-lineSolution line = do
-  card <- parse cardParser line |> fmapL show
-  card
-    |> matches
-    |> (\x -> if x < 1 then 0 else 2 ^ (x - 1))
-    |> return
-
 data Card = Card
-  { id :: Int
+  { cardId :: Int
   , wins :: [Int]
   , have :: [Int]
   }
@@ -32,10 +21,36 @@ data Card = Card
 
 cardParser :: ParserC Card
 cardParser = do
-  id <- exact "Card" >> spaces *> intParser <* (exactly ':' >> spaces)
+  cardId <- exact "Card" >> spaces *> intParser <* (exactly ':' >> spaces)
   wins <- endBySome intParser spaces (exactly '|' |> inSpaces)
   have <- sepBySome intParser spaces
-  return $ Card{id, wins, have}
+  return $ Card{cardId, wins, have}
+
+solution_1 :: Solution
+solution_1 = sumLines go
+ where
+  go line = do
+    card <- parseShow cardParser line
+    card
+      |> matches
+      |> (\x -> if x < 1 then 0 else 2 ^ (x - 1))
+      |> return
+
+solution_2 :: Solution
+solution_2 = Solution go
+ where
+  go input = do
+    cards <- parseShow (lineParser cardParser) input
+    let cardsById = cards |> map (\card@Card{cardId} -> (cardId, card)) |> IM.fromList
+    let allWonCards = concatMap (winningCards cardsById) cards
+    return $ length allWonCards + length cards
 
 matches :: Card -> Int
-matches Card{wins, have} = wins `intersect` have |> length
+matches Card{wins, have} = length $ intersect wins have
+
+winningCards :: IM.IntMap Card -> Card -> [Card]
+winningCards cards card@Card{cardId} =
+  let
+    thisCardWins = [cards IM.! (cardId + i) | i <- [1 .. matches card]]
+   in
+    thisCardWins ++ concatMap (winningCards cards) thisCardWins
