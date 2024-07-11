@@ -1,10 +1,11 @@
 module Aoc23.Day04 (solution_1) where
 
-import Data.List
+import Flow
 import Prelude hiding (id)
 
+import Data.List
+
 import Control.Error (fmapL)
-import Flow
 
 import Aoc23.Solution
 import Core.Parser
