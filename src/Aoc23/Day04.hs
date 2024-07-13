@@ -30,12 +30,10 @@ cardParser = do
 solution_1 :: Solution
 solution_1 = sumLines go
  where
+  getPoints x = if x < 1 then 0 else 2 ^ (x - 1)
   go line = do
     card <- parseShow cardParser line
-    let points =
-          card
-            |> matches
-            |> (\x -> if x < 1 then 0 else 2 ^ (x - 1))
+    let points = card |> matches |> getPoints
     return points
 
 matches :: Card -> Int
