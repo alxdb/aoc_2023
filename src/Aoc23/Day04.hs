@@ -38,6 +38,9 @@ solution_1 = sumLines go
             |> (\x -> if x < 1 then 0 else 2 ^ (x - 1))
     return points
 
+matches :: Card -> Int
+matches Card{wins, have} = length $ intersect wins have
+
 solution_2 :: Solution
 solution_2 = Solution go
  where
@@ -45,9 +48,6 @@ solution_2 = Solution go
     cards <- V.fromList <$> parseShow (lineParser cardParser) input
     let allWonCards = concatMap (winningCards cards) cards
     return $ length allWonCards + length cards
-
-matches :: Card -> Int
-matches Card{wins, have} = length $ intersect wins have
 
 winningCards :: Vector Card -> Card -> [Card]
 winningCards cards card@Card{cardId} =
