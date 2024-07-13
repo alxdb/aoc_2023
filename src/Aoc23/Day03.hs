@@ -88,11 +88,7 @@ schematicParser =
       <|> (Gr <$> exactly '*')
       <|> (Sy <$> anything)
 
-  repeatIfDigit d@(Di x) =
-    let
-      l = show x |> length
-     in
-      replicate l d
+  repeatIfDigit d@(Di x) = replicate (show x |> length) d
   repeatIfDigit x = [x]
 
 indexedSchematic :: Schematic -> [((Int, Int), Part)]
