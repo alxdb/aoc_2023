@@ -1,12 +1,12 @@
-module Core.Parser.Char (
-  digitParser,
-  intParser,
-  exactMapping,
-  lineParser,
-  ParserC,
-  spaces,
-  inSpaces,
-) where
+module Core.Parser.Char
+  ( digitParser
+  , intParser
+  , exactMapping
+  , lineParser
+  , ParserC
+  , spaces
+  , inSpaces
+  ) where
 
 import Flow
 import Prelude

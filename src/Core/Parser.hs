@@ -1,14 +1,14 @@
-module Core.Parser (
-  Error (..),
-  Parser (..),
-  ParserResult,
-  satisfy,
-  end,
-  parseWhile,
-  parse,
-  parseShow,
-  lookAhead,
-) where
+module Core.Parser
+  ( Error (..)
+  , Parser (..)
+  , ParserResult
+  , satisfy
+  , end
+  , parseWhile
+  , parse
+  , parseShow
+  , lookAhead
+  ) where
 
 import Prelude
 

@@ -1,17 +1,14 @@
 module Aoc23.Day04 (solution_1, solution_2) where
 
-import Flow
-import Prelude
-
-import Data.List
-
-import Data.Vector (Vector)
-import Data.Vector qualified as V
-
 import Aoc23.Solution
 import Core.Parser
 import Core.Parser.Char
 import Core.Parser.Combinator
+import Data.List
+import Data.Vector (Vector)
+import Data.Vector qualified as V
+import Flow
+import Prelude
 
 data Card = Card
   { cardId :: Int
@@ -25,7 +22,7 @@ cardParser = do
   cardId <- exact "Card" >> spaces *> intParser <* (exactly ':' >> spaces)
   wins <- endBySome intParser spaces (exactly '|' |> inSpaces)
   have <- sepBySome intParser spaces
-  return $ Card{cardId, wins, have}
+  return $ Card {cardId, wins, have}
 
 solution_1 :: Solution
 solution_1 = sumLines go
@@ -37,7 +34,7 @@ solution_1 = sumLines go
     return points
 
 matches :: Card -> Int
-matches Card{wins, have} = length $ intersect wins have
+matches Card {wins, have} = length $ intersect wins have
 
 solution_2 :: Solution
 solution_2 = Solution go
@@ -48,8 +45,6 @@ solution_2 = Solution go
     return $ length allWonCards + length cards
 
 winningCards :: Vector Card -> Card -> [Card]
-winningCards cards card@Card{cardId} =
-  let
-    thisCardWins = [cards V.! (cardId + i - 1) | i <- [1 .. matches card]]
-   in
-    thisCardWins ++ concatMap (winningCards cards) thisCardWins
+winningCards cards card@Card {cardId} =
+  let thisCardWins = [cards V.! (cardId + i - 1) | i <- [1 .. matches card]]
+   in thisCardWins ++ concatMap (winningCards cards) thisCardWins

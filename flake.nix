@@ -19,6 +19,7 @@
             ghc
             cabal-install
             hpack
+            haskellPackages.fourmolu
           ];
         };
       }

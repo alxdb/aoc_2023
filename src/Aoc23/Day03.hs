@@ -1,12 +1,12 @@
-module Aoc23.Day03 (
-  solution_1,
-  solution_2,
-  schematicParser,
-  Schematic (..),
-  Part (..),
-  getPartNumbers,
-  getGearRatios,
-) where
+module Aoc23.Day03
+  ( solution_1
+  , solution_2
+  , schematicParser
+  , Schematic (..)
+  , Part (..)
+  , getPartNumbers
+  , getGearRatios
+  ) where
 
 import Flow
 import Prelude

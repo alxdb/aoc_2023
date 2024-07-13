@@ -34,15 +34,15 @@ data Hand = Hand {red :: Int, green :: Int, blue :: Int}
 data Cube = Red | Green | Blue
 
 gameIsPossible :: Hand -> Game -> Bool
-gameIsPossible refHand Game{hands} = all handIsPossible hands
+gameIsPossible refHand Game {hands} = all handIsPossible hands
  where
-  handIsPossible Hand{red, green, blue} =
+  handIsPossible Hand {red, green, blue} =
     red <= refHand.red
       && green <= refHand.green
       && blue <= refHand.blue
 
 minimumPossibleCubes :: Game -> Hand
-minimumPossibleCubes Game{hands} = foldl go (Hand 0 0 0) hands
+minimumPossibleCubes Game {hands} = foldl go (Hand 0 0 0) hands
  where
   go acc hand =
     Hand
@@ -57,7 +57,7 @@ gameParser :: ParserC Game
 gameParser = do
   id <- exact "Game " *> intParser <* exact ": "
   hands <- sepBySome handParser (exact "; ")
-  return $ Game{id, hands}
+  return $ Game {id, hands}
 
 handParser :: ParserC Hand
 handParser = do
@@ -74,6 +74,6 @@ asHand :: [(Int, Cube)] -> Hand
 asHand = foldl addCube (Hand 0 0 0)
 
 addCube :: Hand -> (Int, Cube) -> Hand
-addCube hand (x, Red) = hand{red = hand.red + x}
-addCube hand (x, Green) = hand{green = hand.green + x}
-addCube hand (x, Blue) = hand{blue = hand.blue + x}
+addCube hand (x, Red) = hand {red = hand.red + x}
+addCube hand (x, Green) = hand {green = hand.green + x}
+addCube hand (x, Blue) = hand {blue = hand.blue + x}

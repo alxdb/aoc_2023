@@ -1,17 +1,17 @@
-module Core.Parser.Combinator (
-  anything,
-  exactly,
-  exact,
-  never,
-  next,
-  mapping,
-  sepBySome,
-  sepByMany,
-  endBySome,
-  endByMany,
-  surroundedBy,
-  notEnd,
-) where
+module Core.Parser.Combinator
+  ( anything
+  , exactly
+  , exact
+  , never
+  , next
+  , mapping
+  , sepBySome
+  , sepByMany
+  , endBySome
+  , endByMany
+  , surroundedBy
+  , notEnd
+  ) where
 
 import Prelude
 
