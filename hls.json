@@ -92,8 +92,8 @@
             "diagnosticsOn": true
         },
         "importLens": {
-            "codeActionsOn": true,
-            "codeLensOn": true
+            "codeActionsOn": false,
+            "codeLensOn": false
         },
         "moduleName": {
             "globalOn": true
