@@ -9,13 +9,9 @@ import Aoc23.Solution
 import Core.Parser
 import Core.Parser.Char
 import Core.Parser.Combinator
-import Data.Bifunctor (Bifunctor (first))
 
 solution :: Solution
-solution = sumLines extractCalibrationValue
-
-extractCalibrationValue :: String -> Either String Int
-extractCalibrationValue = parse calibrationValueParser .> first show
+solution = sumLinesParser calibrationValueParser id
 
 calibrationValueParser :: ParserC Int
 calibrationValueParser = do

@@ -19,21 +19,14 @@ import Data.Vector (Vector, (!?))
 import Data.Vector qualified as V
 
 import Aoc23.Solution
-import Core.Parser
 import Core.Parser.Char
 import Core.Parser.Combinator hiding (next)
 
 solution_1 :: Solution
-solution_1 = Solution $ \input -> do
-  schematic <- parseShow schematicParser input
-  let partNumbers = getPartNumbers schematic
-  return $ sum partNumbers
+solution_1 = parserSolution schematicParser (getPartNumbers .> sum)
 
 solution_2 :: Solution
-solution_2 = Solution $ \input -> do
-  schematic <- parseShow schematicParser input
-  let gearRatios = getGearRatios schematic
-  return $ sum gearRatios
+solution_2 = parserSolution schematicParser (getGearRatios .> sum)
 
 type Grid a = Vector (Vector a)
 
@@ -101,12 +94,12 @@ indexedSchematic (Schematic rows) =
   flattenIndexes (r, indexedRow) = map (flattenIndex r) indexedRow
   flattenIndex r (c, part) = ((r, c), part)
 
--- group elements if they are successive in a row
+-- | group elements if they are successive in a row
 groupBySucc :: [((Int, Int), a)] -> [[((Int, Int), a)]]
 groupBySucc [] = []
 groupBySucc (x : xs) = foldl go [[x]] xs
  where
-  go (x' : xs') v@((r, c), _)
+  go (x' : xs') e@((r, c), _)
     | let
         -- column of previous element
         ((_, c'), _) = head x'
@@ -115,9 +108,9 @@ groupBySucc (x : xs) = foldl go [[x]] xs
         -- and column of current element is one more than previous element
         (r, c) == (r, succ c') =
         -- append current element to current grouping
-        (v : x') : xs'
+        (e : x') : xs'
     -- create new group
-    | otherwise = [v] : x' : xs'
+    | otherwise = [e] : x' : xs'
   -- will never happen, accumulator is always populated
   go [] _ = undefined
 
@@ -131,7 +124,7 @@ getPartNumbers s =
   getFirstPartNum = mapMaybe getPartNum .> listToMaybe
 
   getPartNum (i, d)
-    | any (snd .> isSymbol) $ neighbours s i = Just d
+    | neighbours s i |> any (snd .> isSymbol) = Just d
     | otherwise = Nothing
 
 getGearRatios :: Schematic -> [Int]

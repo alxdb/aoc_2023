@@ -4,19 +4,11 @@ import Flow
 import Prelude hiding (id)
 
 import Aoc23.Solution
-import Core.Parser
 import Core.Parser.Char
 import Core.Parser.Combinator
-import Data.Bifunctor (Bifunctor (bimap))
 
 solution_1 :: Solution
-solution_1 = sumLines lineSolution_1
-
-solution_2 :: Solution
-solution_2 = sumLines lineSolution_2
-
-lineSolution_1 :: String -> Either String Int
-lineSolution_1 = parse gameParser .> bimap show go
+solution_1 = sumLinesParser gameParser go
  where
   referenceHand = Hand 12 13 14
   go game =
@@ -24,34 +16,12 @@ lineSolution_1 = parse gameParser .> bimap show go
       then game.id
       else 0
 
-lineSolution_2 :: String -> Either String Int
-lineSolution_2 line = do
-  game <- parseShow gameParser line
-  return (minimumPossibleCubes game |> handPower)
+solution_2 :: Solution
+solution_2 = sumLinesParser gameParser (minimumPossibleCubes .> handPower)
 
 data Game = Game {id :: Int, hands :: [Hand]}
 data Hand = Hand {red :: Int, green :: Int, blue :: Int}
 data Cube = Red | Green | Blue
-
-gameIsPossible :: Hand -> Game -> Bool
-gameIsPossible refHand Game {hands} = all handIsPossible hands
- where
-  handIsPossible Hand {red, green, blue} =
-    red <= refHand.red
-      && green <= refHand.green
-      && blue <= refHand.blue
-
-minimumPossibleCubes :: Game -> Hand
-minimumPossibleCubes Game {hands} = foldl go (Hand 0 0 0) hands
- where
-  go acc hand =
-    Hand
-      (max acc.red hand.red)
-      (max acc.green hand.green)
-      (max acc.blue hand.blue)
-
-handPower :: Hand -> Int
-handPower (Hand r g b) = r * g * b
 
 gameParser :: ParserC Game
 gameParser = do
@@ -77,3 +47,23 @@ addCube :: Hand -> (Int, Cube) -> Hand
 addCube hand (x, Red) = hand {red = hand.red + x}
 addCube hand (x, Green) = hand {green = hand.green + x}
 addCube hand (x, Blue) = hand {blue = hand.blue + x}
+
+gameIsPossible :: Hand -> Game -> Bool
+gameIsPossible refHand Game {hands} = all handIsPossible hands
+ where
+  handIsPossible Hand {red, green, blue} =
+    red <= refHand.red
+      && green <= refHand.green
+      && blue <= refHand.blue
+
+minimumPossibleCubes :: Game -> Hand
+minimumPossibleCubes Game {hands} = foldl go (Hand 0 0 0) hands
+ where
+  go acc hand =
+    Hand
+      (max acc.red hand.red)
+      (max acc.green hand.green)
+      (max acc.blue hand.blue)
+
+handPower :: Hand -> Int
+handPower (Hand r g b) = r * g * b
