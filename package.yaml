@@ -20,6 +20,7 @@ library:
     - vector
     - extra
     - flow
+    - mtl
 
 executables:
   aoc2023:
