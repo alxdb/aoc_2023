@@ -21,6 +21,7 @@ library
       Aoc23.Day02
       Aoc23.Day03
       Aoc23.Day04
+      Aoc23.Day05
       Aoc23.Solution
       Core.Parser
       Core.Parser.Char
@@ -69,6 +70,7 @@ test-suite spec
       Aoc23.Day02Spec
       Aoc23.Day03Spec
       Aoc23.Day04Spec
+      Aoc23.Day05Spec
       Core.Parser.CharSpec
       Core.Parser.CombinatorSpec
       Core.ParserSpec
