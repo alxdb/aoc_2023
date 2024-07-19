@@ -17,7 +17,7 @@ sampleInput =
   \Card  6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11\n"
 
 spec :: Spec
-spec = describe "Aoc23.Day04Spec" $ do
+spec = describe "Aoc23.Day04" $ do
   describe "solution_1" $ do
     it "solves the example solution" $
       runSolution solution_1 sampleInput `shouldBe` Right 13
