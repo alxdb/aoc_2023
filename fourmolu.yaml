@@ -49,5 +49,5 @@ fixities: []
 # Module reexports Fourmolu should know about
 reexports: []
 
-# Rules for grouping import declarations (comming soon)
+# Rules for grouping import declarations (coming soon)
 import-grouping: local-modules
